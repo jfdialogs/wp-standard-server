@@ -16,7 +16,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "./install-container"
+            "install-server"
         ]
     }
 }

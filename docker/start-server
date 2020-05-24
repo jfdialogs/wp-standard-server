@@ -2,7 +2,7 @@
 
 if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   echo "Starting local project server."
-    echo ""
+  echo ""
 
   if [ ! -f "$DOCKER_DIR/.installed" ]; then
     echo "Install not detected, prompting for environment installation."
@@ -47,7 +47,7 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
 
   open $WEB_URL
 
-  echo "Done. Use server stop to quit."
+  echo "Done. Use './server stop' to quit."
 else
   echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

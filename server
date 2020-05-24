@@ -18,7 +18,7 @@ export CWD=$(cwd)
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
 
-COMMANDS=(help start stop setup install uninstall)
+export COMMANDS=(help start stop setup install uninstall)
 COMMAND=$1
 
 if [ ! -n "$COMMAND" ]; then
