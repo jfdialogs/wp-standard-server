@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+
+function make_project_env_file {
+  FILENAME="$PROJECT_DIR/.env"
+
+  echo "Generate Project Environment Variables"
+  echo ""
+
+  echo "What is the project name (alphanumeric, dashes and periods only)?"
+
+  read PROJECT_NAME
+
+  echo "What is the web port to use?"
+
+  read WEB_PORT
+
+  echo "What is the application environment (dev, test, prod)?"
+
+  read APP_ENV
+
+  echo ""
+  echo "Writing $FILENAME"
+
+  echo "PROJECT_NAME=$PROJECT_NAME" > $FILENAME
+  echo "" >> $FILENAME
+  echo "APP_ENV=$APP_ENV" >> $FILENAME
+  echo "WEB_PORT=$WEB_PORT" >> $FILENAME
+  echo "" >> $FILENAME
+  echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> $FILENAME
+}
+
+function make_local_env_file {
+  FILENAME="$PROJECT_DIR/.env.local"
+
+  echo "Generate Local Environment Variables"
+  echo ""
+
+  echo "What is the local database name?"
+
+  read MYSQL_DATABASE
+
+  echo "What is the local database user?"
+
+  read MYSQL_USER
+
+  echo "What is the local database user password?"
+
+  read MYSQL_PASSWORD
+
+  echo ""
+  echo "Writing $FILENAME"
+
+  echo "# This part is needed for MySQL to create the user successfully on first touch." > $FILENAME
+  echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> $FILENAME
+  echo "MYSQL_USER=$MYSQL_USER" >> $FILENAME
+  echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
+  echo "" >> $FILENAME
+  echo "# These are the actual settings for the Wordpress docker installation." >> $FILENAME
+  echo "WORDPRESS_DB_HOST=$PROJECT_NAME-data" >> $FILENAME
+  echo "WORDPRESS_DB_NAME=$MYSQL_DATABASE" >> $FILENAME
+  echo "WORDPRESS_DB_USER=$MYSQL_USER" >> $FILENAME
+  echo "WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
+}
+
+function make_prod_env_file {
+  FILENAME="$PROJECT_DIR/.env.prod"
+
+  echo "Generate Production Environment Variables"
+  echo ""
+
+  echo "What is the production database host?"
+
+  read PROD_DB_HOST
+
+  echo "What is the production database port?"
+
+  read PROD_DB_PORT
+
+  echo "What is the production database name?"
+
+  read PROD_DB_NAME
+
+  echo "What is the production database user?"
+
+  read PROD_DB_USER
+
+  echo "What is the production database user password?"
+
+  read PROD_DB_PASSWORD
+
+  echo ""
+
+  echo "PROD_DB_HOST=$PROD_DB_HOST" > $FILENAME
+  echo "PROD_DB_PORT=$PROD_DB_PORT" >> $FILENAME
+  echo "PROD_DB_NAME=$PROD_DB_NAME" >> $FILENAME
+  echo "PROD_DB_USER=$PROD_DB_USER" >> $FILENAME
+  echo "PROD_DB_PASSWORD=$PROD_DB_PASSWORD" >> $FILENAME
+}
+
+function make_project_directories {
+  WP_CONTENT="$PROJECT_DIR/wp-content"
+  WP_CONTENT_PLUGINS="$WP_CONTENT/plugins"
+  WP_CONTENT_THEMES="$WP_CONTENT/themes"
+
+  if [ ! -d "$WP_CONTENT"]; then
+    mkdir "$WP_CONTENT"
+  fi
+
+  if [ ! -d "$WP_CONTENT_PLUGINS"]; then
+    mkdir "$WP_CONTENT_PLUGINS"
+  fi
+
+  if [ ! -d "$WP_CONTENT_THEMES"]; then
+    mkdir "$WP_CONTENT_THEMES"
+  fi
+}
+
+if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+  make_project_env_file
+
+  source "$PROJECT_DIR/.env" && echo ""
+
+  make_local_env_file
+
+  source "$PROJECT_DIR/.env.local" && echo ""
+
+  make_prod_env_file
+
+  touch "$DOCKER_DIR/.installed"
+
+  echo $(date '+%Y-%m-%d %H:%M:%S') >> "$DOCKER_DIR/.installed"
+
+  echo "Done."
+else
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+fi

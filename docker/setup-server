@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+  docker-compose -f "$PROJECT_DIR/docker-compose.yaml" --env-file "$PROJECT_DIR/.env" exec data /docker/setup-database-server
+else
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+fi

@@ -1,0 +1,22 @@
+{
+    "name": "dmagazine/wp-standard-container",
+    "description": "A standard WordPress docker containerization configuration for D-Magazine sites.",
+    "require": {
+        "php": "^7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0",
+        "friendsofphp/php-cs-fixer": "^2.0"
+    },
+    "config": {
+        "platform": {
+            "php": "7.2"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "./install-container"
+        ]
+    }
+}

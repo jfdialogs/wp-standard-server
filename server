@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+function cwd {
+  echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+}
+
+export -f cwd
+
+function has_command {
+  COMMAND=$1
+
+  echo $(printf '%s\n' ${COMMANDS[@]} | grep -e "^$COMMAND$")
+}
+
+SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+export CWD=$(cwd)
+export PROJECT_DIR="$CWD"
+export DOCKER_DIR="$PROJECT_DIR/docker"
+
+COMMANDS=(help start stop setup install uninstall)
+COMMAND=$1
+
+if [ ! -n "$COMMAND" ]; then
+  COMMAND=help
+fi
+
+if [ -f "$PROJECT_DIR/.env" ]; then
+  source "$PROJECT_DIR/.env"
+fi
+
+clear
+
+echo ""
+echo "Welcome to the Server Dock!"
+echo $SECTION
+echo ""
+
+if [ -n $(has_command $COMMAND) ]; then
+  if [ "help" != "$COMMAND" ]; then
+    echo "COMMAND: $COMMAND"
+    echo ""
+
+    COMMAND_SCRIPT="$DOCKER_DIR/$COMMAND-server"
+
+    if [ -f "$COMMAND_SCRIPT" ]; then
+      source "$COMMAND_SCRIPT"
+    else
+      echo "Command not found!"
+    fi
+  else
+    echo "${COMMANDS[@]}"
+  fi
+fi
+
+echo ""
+echo $SECTION
+echo ""

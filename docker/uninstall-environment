@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+  function remove_file {
+    FILE_TO_REMOVE=$1
+
+    if [ -f "$FILE_TO_REMOVE" ]; then
+      rm "$FILE_TO_REMOVE"
+
+      echo "Removed $FILE_TO_REMOVE."
+      echo ""
+    fi
+  }
+
+  DATABASE_DIR="$DOCKER_DIR/data"
+
+  echo "WARNING!!!"
+  echo "This will uninstall the docker environment project variables by deleting .env files."
+  echo "Continue (y/n)?"
+
+  read ANSWER
+
+  echo ""
+
+  if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+    remove_file "$PROJECT_DIR/.env"
+    remove_file "$PROJECT_DIR/.env.local"
+    remove_file "$PROJECT_DIR/.env.prod"
+
+    echo "Environment uninstalled."
+
+    INSTALLED="$DOCKER_DIR/.installed"
+
+    if [ -f "$INSTALLED" ]; then
+      echo ""
+      remove_file $INSTALLED
+    fi
+
+    if [ -n "$(ls -A "$DATABASE_DIR" 2>/dev/null)" ]; then
+      echo "Clear database data cache directory contents (y/n)?"
+      echo "Note this cannot be undone."
+
+      read ANSWER
+
+      echo ""
+
+      if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+        rm -r $DATABASE_DIR
+        mkdir $DATABASE_DIR
+
+        echo "$DATABASE_DIR successfully cleared."
+      fi
+    fi
+  else
+    echo "Aborting environment uninstall."
+  fi
+else
+  echo "PROJECT_DIR and DOCKER_DIR required."
+fi

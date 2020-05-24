@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+function cwd {
+  echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+}
+
+function dump_filename {
+  DB_NAME=$1
+
+  echo "$DOCKER_DIR/data/$DB_NAME-$(date '+%Y%m%d%H%M%S').sql"
+}
+
+function cnf_file {
+  FILENAME="$DOCKER_DIR/data/$1-credentials.cnf"
+  DB_USER=$2
+  DB_PASSWORD=$3
+
+  echo "[client]" > $FILENAME
+  echo "user=$DB_USER" >> $FILENAME
+  echo "password=$DB_PASSWORD" >> $FILENAME
+
+  echo $FILENAME
+}
+
+PROJECT_DIR=$(dirname pwd)
+DOCKER_DIR=$(cwd)
+
+if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+  DUMP_FILENAME=$(dump_filename $PROD_DB_NAME)
+
+  echo "This action will drop the '${WORDPRESS_DB_NAME}' local database and import '${PROD_DB_NAME}' from production."
+  echo "Continue (y/n)?"
+
+  read ANSWER
+
+  echo ""
+
+  if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+    echo "Dumping remote database ${PROD_DB_HOST}/${PROD_DB_NAME} with user ${PROD_DB_USER}..."
+    echo "   into locate database ${WORDPRESS_DB_NAME} with user ${WORDPRESS_DB_USER}..."
+    echo "   saving as ${DUMP_FILENAME}..."
+    echo ""
+
+    PROD_CNF=$(cnf_file "prod" $PROD_DB_USER $PROD_DB_PASSWORD)
+    LOCAL_CNF=$(cnf_file "local" $WORDPRESS_DB_USER $WORDPRESS_DB_PASSWORD)
+
+    mysqldump --defaults-extra-file=$PROD_CNF --host $PROD_DB_HOST --port $PROD_DB_PORT --quick --compress $PROD_DB_NAME > "$DUMP_FILENAME"
+
+    mysql --defaults-extra-file=$LOCAL_CNF -e "DROP DATABASE IF EXISTS ${WORDPRESS_DB_NAME}"
+    mysql --defaults-extra-file=$LOCAL_CNF -e "CREATE DATABASE IF NOT EXISTS ${WORDPRESS_DB_NAME}"
+    mysql --defaults-extra-file=$LOCAL_CNF $WORDPRESS_DB_NAME < $DUMP_FILENAME
+
+    echo "Keep database dump file $DUMP_FILENAME (y/n)?"
+    echo ""
+
+    read ANSWER
+
+    if [ "$ANSWER" != "${ANSWER#[Nn]}" ]; then
+      rm $DUMP_FILENAME
+    fi
+
+    rm $PROD_CNF
+    rm $LOCAL_CNF
+
+    echo "Done."
+  else
+    echo "Aborting setting up database from '${PROD_DB_HOST}'."
+  fi
+else
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+fi
