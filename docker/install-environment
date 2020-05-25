@@ -8,7 +8,7 @@ function make_project_env_file {
 
   echo "What is the project name (alphanumeric, dashes and periods only)?"
 
-  read PROJECT_NAME
+  read PROJECT_KEY
 
   echo "What is the web port to use?"
 
@@ -21,7 +21,7 @@ function make_project_env_file {
   echo ""
   echo "Writing $FILENAME"
 
-  echo "PROJECT_NAME=$PROJECT_NAME" > $FILENAME
+  echo "PROJECT_KEY=$PROJECT_KEY" > $FILENAME
   echo "" >> $FILENAME
   echo "APP_ENV=$APP_ENV" >> $FILENAME
   echo "WEB_PORT=$WEB_PORT" >> $FILENAME
@@ -56,7 +56,7 @@ function make_local_env_file {
   echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
   echo "" >> $FILENAME
   echo "# These are the actual settings for the Wordpress docker installation." >> $FILENAME
-  echo "WORDPRESS_DB_HOST=$PROJECT_NAME-data" >> $FILENAME
+  echo "WORDPRESS_DB_HOST=$PROJECT_KEY-data" >> $FILENAME
   echo "WORDPRESS_DB_NAME=$MYSQL_DATABASE" >> $FILENAME
   echo "WORDPRESS_DB_USER=$MYSQL_USER" >> $FILENAME
   echo "WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME

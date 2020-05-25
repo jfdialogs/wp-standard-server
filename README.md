@@ -1,31 +1,33 @@
 # Standard WordPress Container
-**Runnable Docker environment, using environment variable files.**
+**Runnable WordPress Docker environment.**
 
 ---
  
 ## Server Dock
  
-To properly use the local runnable server, observe these commands:
+The following commands are available:
  
  - **help**: Show these commands.
- - **start**: Start server. If no .env(.*) files are present, it will go through install routine.
- - **stop**: Run docker-compose stop on the relevent network services.
- - **setup**: Setup local database to match prod database. Requires .env.prod connection to be working.
- - **install**: Runs routine for installing .env(.*) files for installation purposes.
- - **uninstall**: Remove .env(.*) files and optionally data-related directory and files for hard reset.
+ - **start**: Start running the container. If no `.env(.*)` files are present, it will go through install routine.
+ - **stop**: Run `docker-compose stop` on the relevent network services and environment settings.
+ - **setup**: Setup local database to match prod database. Requires `.env.prod` connection to be working.
+ - **install**: Runs routine for installing `.env(.*)` files for installation purposes.
+ - **uninstall**: Remove `.env(.*)` files and optionally data-related directory and files for hard reset.
+ 
+Other commands:
+
+ - **use-web**: Open interactive shell in running `web` container environment.
+ - **use-web**: Open interactive shell in running `data` container environment.
 
 ## How to Use
 
 ```shell script
-# 'server start' has an implicit install/setup feature.
-./server start
-./server stop
-./server setup
-./server install
-./server uninstall
+$ ./server start         # Runs docker-compose up.
+$ ./server stop          # Runs docker-compose stop.
+$ ./server setup         # Dump and replace local database with PROD data using .env.prod settings.
+$ ./server install       # Install environment files with interactive prompts.
+$ ./server uninstall     # Remove environment files and optionally data/local database.
 ```
-
-The use of `./` in the `./server` and other other script calls allows the file to be executed.
 
 ### Alternate Method
 To call on the command line each individual script in the `/docker` folder, the 
@@ -35,11 +37,51 @@ To call on the command line each individual script in the `/docker` folder, the
 export PROJECT_DIR=/var/www
 export DOCKER_DIR="$PROJECT_DIR/docker"
 
-source "$DOCKER_DIR/setup-database-server"
+# These are both called implicitly during './server start'.
 source "$DOCKER_DIR/install-environment"
+source "$DOCKER_DIR/setup-database-server"
 ```
 
 ## Environment Files
-Environment variables are the glue between the system and it's externalities. Use
-the various `.env` files to pass critical settings and other errata used by the
-system to determine a response to a request to take action of some kind.
+Environment variables are used to pass contextual configuration such as connection 
+information, service configuration and other needed settings and context to the 
+application container. Use the various `.env` files to pass critical settings and 
+other errata used by the container for request resolution.
+
+### Environment Variables
+
+### `.env`
+Used to store application-level concerns. The `.env` is read before Docker Compose 
+loads, variables placed in this file are available in the `docker-compose.yaml`
+container server configuration.
+
+- `PROJECT_KEY`: Used for the container name; e.g. `project-name`.
+- `APP_ENV`: Use `dev`, `test` or `prod`.
+- `WEB_PORT`: Used for running the container's request port.
+
+### `.env.local`
+
+These are the actual settings for the Wordpress docker installation. These are used
+primarily by the WordPress image.
+
+- `WORDPRESS_DB_HOST`: Generated with the given `PROJECT_KEY`, e.g. `project-name-data`.
+- `WORDPRESS_DB_NAME`: Name of database to use.
+- `WORDPRESS_DB_USER`: Database user for project.
+- `WORDPRESS_DB_PASSWORD`: Database user password.
+
+> **Note** The following keys are used for configuring the MySQL service on first
+> run. These should be copies of the `WORDPRESS` environment variables and are
+> automatically copied when using the install script.
+>
+> - `MYSQL_DATABASE`
+> - `MYSQL_USER`
+> - `MYSQL_PASSWORD`
+
+### `.env.prod`
+
+- `PROD_DB_HOST`: 
+- `PROD_DB_PORT`: 
+- `PROD_DB_NAME`: 
+- `PROD_DB_USER`: 
+- `PROD_DB_PASSWOR`: 
+
