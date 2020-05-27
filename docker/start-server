@@ -11,16 +11,8 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
     source "$DOCKER_DIR/install-environment"
 
     echo ""
-    echo "Environment variables installed. Pull database from PROD (y/n)?"
-    echo "Note, this requires the .env.prod connection information to be available."
-
-    read PULL_PROD_DATA
-
+    echo "Environment variables installed. Use ./server setup to pull PROD data into local database."
     echo ""
-
-    if [ "$PULL_PROD_DATA" != "${PULL_PROD_DATA#[Yy]}" ]; then
-      source "$DOCKER_DIR/setup-server"
-    fi
   fi
 
   source "$PROJECT_DIR/.env"
@@ -35,7 +27,7 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   docker-compose -f "$PROJECT_DIR/docker-compose.yaml" --env-file "$PROJECT_DIR/.env" up -d --remove-orphans
 
   echo ""
-  echo "Server started in background. Waiting for availability..."
+  echo "Server started in background. Waiting for availability (may take longer on first run)..."
   echo ""
 
   sleep 5

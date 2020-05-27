@@ -9,7 +9,7 @@ export -f cwd
 function has_command {
   COMMAND=$1
 
-  echo $(printf '%s\n' ${COMMANDS[@]} | grep -e "^$COMMAND$")
+  echo $(printf '%s\n' "${COMMANDS[@]}" | grep -e "^$COMMAND$")
 }
 
 SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -18,7 +18,7 @@ export CWD=$(cwd)
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
 
-export COMMANDS=(help start stop use-web use-data setup install uninstall)
+export COMMANDS=(help start stop use-app use-data setup install uninstall)
 COMMAND=$1
 
 if [ ! -n "$COMMAND" ]; then

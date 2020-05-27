@@ -16,8 +16,8 @@ The following commands are available:
  
 Other commands:
 
- - **use-web**: Open interactive shell in running `web` container environment.
- - **use-web**: Open interactive shell in running `data` container environment.
+ - **use-app**: Open interactive shell in running (web) `app` container environment.
+ - **use-data**: Open interactive shell in running (mysql) `data` container environment.
 
 ## How to Use
 
@@ -79,9 +79,8 @@ primarily by the WordPress image.
 
 ### `.env.prod`
 
-- `PROD_DB_HOST`: 
-- `PROD_DB_PORT`: 
-- `PROD_DB_NAME`: 
-- `PROD_DB_USER`: 
-- `PROD_DB_PASSWOR`: 
-
+- `PROD_DB_HOST`: Remote host url to MySQL instance.
+- `PROD_DB_PORT`: Port to access on remote, required.
+- `PROD_DB_NAME`: Database name of remote.
+- `PROD_DB_USER`: Database user on remote.
+- `PROD_DB_PASSWORD`: Database user password on remote.

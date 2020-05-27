@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -n "$PROJECT_DIR" ]; then
+  source "$PROJECT_DIR/docker/stop-server" &&\
   source "$PROJECT_DIR/docker/uninstall-environment"
 else
   echo "PROJECT_DIR required."

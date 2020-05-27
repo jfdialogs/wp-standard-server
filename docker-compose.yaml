@@ -2,8 +2,8 @@ version: '3.1'
 
 services:
   
-  web:
-    container_name: "${PROJECT_KEY}-web"
+  app:
+    container_name: "${PROJECT_KEY}-app"
     build: .
     restart: always
     ports:
@@ -12,7 +12,8 @@ services:
       - .env
       - .env.local
     volumes:
-      - .:/var/www:cached
+#      - .:/var/www:cached
+      - ./docker:/docker:cached
       - ./wp-content:/var/www/html/wp-content:cached
   
   data:
@@ -26,3 +27,7 @@ services:
     volumes:
       - ./docker:/docker:cached
       - ./docker/data:/var/lib/mysql
+
+volumes:
+  web:
+  data:

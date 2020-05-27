@@ -22,10 +22,15 @@ function cnf_file {
   echo $FILENAME
 }
 
-PROJECT_DIR=$(dirname pwd)
-DOCKER_DIR=$(cwd)
+if [ ! -n "$PROJECT_DIR" ]; then
+  PROJECT_DIR=/var/lib/mysql
+fi
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ ! -n "$DOCKER_DIR" ]; then
+    DOCKER_DIR="/docker"
+fi
+
+if [ -d "$PROJECT_DIR" ] && [ -d "$DOCKER_DIR" ]; then
   DUMP_FILENAME=$(dump_filename $PROD_DB_NAME)
 
   echo "This action will drop the '${WORDPRESS_DB_NAME}' local database and import '${PROD_DB_NAME}' from production."

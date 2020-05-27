@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
-  echo "Running shell within web container..."
+  echo "Running shell within web app container..."
   echo ""
 
   ENV_FILE="$PROJECT_DIR/.env"
 
   if [ -f "$ENV_FILE" ]; then
-    docker-compose -f "$PROJECT_DIR/docker-compose.yaml" --env-file "$ENV_FILE" exec web bash
+    docker-compose -f "$PROJECT_DIR/docker-compose.yaml" --env-file "$ENV_FILE" exec app bash
   else
     echo "Environment file $ENV_FILE missing. Aborting."
   fi
