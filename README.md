@@ -27,6 +27,8 @@ $ ./server stop          # Runs docker-compose stop.
 $ ./server setup         # Dump and replace local database with PROD data using .env.prod settings.
 $ ./server install       # Install environment files with interactive prompts.
 $ ./server uninstall     # Remove environment files and optionally data/local database.
+$ ./server use-app       # Open shell into local (web) app container.
+$ ./server use-data      # Open shell into local (mysql) data container.
 ```
 
 ### Alternate Method
