@@ -18,7 +18,7 @@ export CWD=$(cwd)
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
 
-export COMMANDS=(help start stop use-app use-data setup install uninstall)
+export COMMANDS=(help start stop start-prod stop-prod use-app use-data setup install uninstall)
 COMMAND=$1
 
 if [ ! -n "$COMMAND" ]; then
@@ -36,7 +36,7 @@ echo "Welcome to the Server Dock!"
 echo $SECTION
 echo ""
 
-if [ -n $(has_command $COMMAND) ]; then
+if [ -n "$(has_command $COMMAND)" ]; then
   if [ "help" != "$COMMAND" ]; then
     echo "COMMAND: $COMMAND"
     echo ""

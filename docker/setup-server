@@ -5,7 +5,7 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
     source "$DOCKER_DIR/start-server"
   fi
 
-  docker-compose -f "$PROJECT_DIR/docker-compose.yaml" --env-file "$PROJECT_DIR/.env" exec data /docker/setup-database-server
+  docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$PROJECT_DIR/.env" exec data /docker/setup-database-server
 else
   echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

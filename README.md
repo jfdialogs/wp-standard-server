@@ -54,7 +54,7 @@ other errata used by the container for request resolution.
 
 ### `.env`
 Used to store application-level concerns. The `.env` is read before Docker Compose 
-loads, variables placed in this file are available in the `docker-compose.yaml`
+loads, variables placed in this file are available in the `compose-local.yaml`
 container server configuration.
 
 - `PROJECT_KEY`: Used for the container name; e.g. `project-name`.
