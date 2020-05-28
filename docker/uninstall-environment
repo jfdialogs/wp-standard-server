@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
   function remove_file {
     FILE_TO_REMOVE=$1
 
@@ -54,6 +56,4 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   else
     echo "Aborting environment uninstall."
   fi
-else
-  echo "PROJECT_DIR and DOCKER_DIR required."
 fi

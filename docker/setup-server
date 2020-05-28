@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
   if [ ! -n "$(docker inspect -f '{{.State.Running}}' $PROJECT_KEY-data)" ]; then
     source "$DOCKER_DIR/start-server"
   fi
 
   docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$PROJECT_DIR/.env" exec data /docker/setup-database-server
-else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

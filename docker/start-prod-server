@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+elif [ -z "$APP_ENV" ] || [ "$APP_ENV" != "prod" ]; then
+  echo "Running PROD configuraiton in DEV is discouraged."
+else
   echo "Starting local project server."
   echo ""
 
@@ -41,6 +45,4 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   open $WEB_URL
 
   echo "Done. Use './server stop-prod' to quit."
-else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

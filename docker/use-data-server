@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
+else
   echo "Running shell within data container..."
   echo ""
 
@@ -11,6 +13,4 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   else
     echo "Environment file $ENV_FILE missing. Aborting."
   fi
-else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
   echo "Starting local project server."
   echo ""
 
@@ -40,6 +42,4 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   open $WEB_URL
 
   echo "Done. Use './server stop' to quit."
-else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

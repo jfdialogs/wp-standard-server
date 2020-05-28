@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
-  source "$PROJECT_DIR/docker/install-environment"
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
 else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
+  source "$PROJECT_DIR/docker/install-environment"
 fi

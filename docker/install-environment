@@ -118,7 +118,9 @@ function make_project_directories {
   fi
 }
 
-if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
   make_project_env_file
 
   source "$PROJECT_DIR/.env" && echo ""
@@ -134,6 +136,4 @@ if [ -n "$PROJECT_DIR" ] && [ -n "$DOCKER_DIR" ]; then
   echo $(date '+%Y-%m-%d %H:%M:%S') >> "$DOCKER_DIR/.installed"
 
   echo "Done."
-else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
 fi

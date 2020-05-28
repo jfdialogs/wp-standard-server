@@ -30,7 +30,9 @@ if [ ! -n "$DOCKER_DIR" ]; then
     DOCKER_DIR="/docker"
 fi
 
-if [ -d "$PROJECT_DIR" ] && [ -d "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
   DUMP_FILENAME=$(dump_filename $PROD_DB_NAME)
 
   echo "This action will drop the '${WORDPRESS_DB_NAME}' local database and import '${PROD_DB_NAME}' from production."
@@ -56,9 +58,10 @@ if [ -d "$PROJECT_DIR" ] && [ -d "$DOCKER_DIR" ]; then
     mysql --defaults-extra-file=$LOCAL_CNF $WORDPRESS_DB_NAME < $DUMP_FILENAME
 
     echo "Keep database dump file $DUMP_FILENAME (y/n)?"
-    echo ""
 
     read ANSWER
+
+    echo ""
 
     if [ "$ANSWER" != "${ANSWER#[Nn]}" ]; then
       rm $DUMP_FILENAME
@@ -71,6 +74,4 @@ if [ -d "$PROJECT_DIR" ] && [ -d "$DOCKER_DIR" ]; then
   else
     echo "Aborting setting up database from '${PROD_DB_HOST}'."
   fi
-else
-  echo "PROJECT_DIR and DOCKER_DIR are required."
 fi
