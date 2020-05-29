@@ -6,10 +6,8 @@ else
   echo "Stopping container..."
   echo ""
 
-  ENV_FILE="$PROJECT_DIR/.env"
-
   if [ -f "$ENV_FILE" ]; then
-    docker-compose -f "$PROJECT_DIR/compose-prod.yaml" --env-file "$ENV_FILE" stop
+    docker-compose -f "$PROJECT_DIR/compose-prod.yaml"  stop
 
     echo ""
     echo "Stopped."
