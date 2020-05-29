@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and $DOCKER_DIR is required."
+else
+  POST_RECEIVE_FILENAME="$PROJECT_DIR/.git/hooks/post-receive"
+
+  echo "Removing post-receive git hook symlink..."
+
+  if [ ! -f "$POST_RECEIVE_FILENAME" ]; then
+     rm $POST_RECEIVE_FILENAME
+  fi
+
+  echo "Done."
+fi
