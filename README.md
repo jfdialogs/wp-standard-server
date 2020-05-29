@@ -11,6 +11,7 @@ The following commands are available:
  - **start**: Start running the container. If no `.env(.*)` files are present, it will go through install routine.
  - **stop**: Run `docker-compose stop` on the relevent network services and environment settings.
  - **setup**: Setup local database to match prod database. Requires `.env.prod` connection to be working.
+ - **deploy**: Setup symlinks to local git deployment hooks with local git hooks directory.
  - **install**: Runs routine for installing `.env(.*)` files for installation purposes.
  - **uninstall**: Remove `.env(.*)` files and optionally data-related directory and files for hard reset.
  
@@ -22,9 +23,12 @@ Other commands:
 ## How to Use
 
 ```shell script
-$ ./server start         # Runs docker-compose up.
-$ ./server stop          # Runs docker-compose stop.
+$ ./server start         # Runs docker-compose up with compose-local.yaml.
+$ ./server stop          # Runs docker-compose stop with local compose-local.yaml.
+$ ./server start-prod    # Runs docker-compose up with compose-prod.yaml.
+$ ./server stop-prod     # Runs docker-compose stop with compose-prod.yaml.
 $ ./server setup         # Dump and replace local database with PROD data using .env.prod settings.
+$ ./server deploy        # Copy deployment git hooks into local git hooks directory.
 $ ./server install       # Install environment files with interactive prompts.
 $ ./server uninstall     # Remove environment files and optionally data/local database.
 $ ./server use-app       # Open shell into local (web) app container.
@@ -71,7 +75,7 @@ primarily by the WordPress image.
 - `WORDPRESS_DB_USER`: Database user for project.
 - `WORDPRESS_DB_PASSWORD`: Database user password.
 
-> **Note** The following keys are used for configuring the MySQL service on first
+> **Note**: The following keys are used for configuring the MySQL service on first
 > run. These should be copies of the `WORDPRESS` environment variables and are
 > automatically copied when using the install script.
 >

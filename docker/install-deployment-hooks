@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and $DOCKER_DIR is required."
+else
+  echo "Installing deployment hooks..."
+  echo ""
+
+  POST_RECEIVE_FILENAME="$PROJECT_DIR/.git/hooks/post-receive"
+
+  if [ -h "$POST_RECEIVE_FILENAME" ]; then
+    echo "Deleting previous $POST_RECEIVE_FILENAME file found."
+    echo ""
+
+    rm "$POST_RECEIVE_FILENAME"
+  fi
+
+  source "$PROJECT_DIR/.env"
+
+  echo "Installing $POST_RECEIVE_FILENAME symlink."
+  echo ""
+
+  ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
+
+  echo "Done."
+fi

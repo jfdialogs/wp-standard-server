@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and $DOCKER_DIR is required."
+else
+  source "$DOCKER_DIR/install-deployment-hooks"
+fi
