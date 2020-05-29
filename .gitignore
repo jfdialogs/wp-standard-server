@@ -1,4 +1,5 @@
-/wp-content
+# This can be removed in specific projects, prevents wp-content from being added here
+wp-content
 
 # Container #
 ############
