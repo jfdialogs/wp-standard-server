@@ -11,21 +11,42 @@ function make_project_env_file {
 
   read PROJECT_KEY
 
-  echo "What is the web port to use?"
-
-  read WEB_PORT
-
-  echo "What is the application environment (dev, test, prod)?"
+  echo "What is the current application environment (dev, test, prod)?"
 
   read APP_ENV
 
+  echo "What is the web protocol of the current environment (http or https)?"
+
+  read WEB_PROTOCOL
+
+  echo "What is the hostname of the current environment (e.g. localhost or macbook-pro.local equivalent)?"
+
+  read WEB_HOSTNAME
+
+  echo "What is the web port to use (generally ~9000)?"
+
+  read WEB_PORT
+
   echo ""
+
+  BASE_URL="$WEB_PROTOCOL://$WEB_HOSTNAME"
+
+  if [ "$WEB_PORT" != "80" ] && [ "$WEB_PORT" != "8080" ]; then
+    BASE_URL="$BASE_URL:$WEB_PORT"
+  fi
+
+  echo "Using BASE_URL of $BASE_URL."
+  echo ""
+
   echo "Writing $FILENAME"
 
   echo "PROJECT_KEY=$PROJECT_KEY" > $FILENAME
-  echo "" >> $FILENAME
   echo "APP_ENV=$APP_ENV" >> $FILENAME
+  echo "" >> $FILENAME
+  echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> $FILENAME
+  echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> $FILENAME
   echo "WEB_PORT=$WEB_PORT" >> $FILENAME
+  echo "" >> $FILENAME
   echo "" >> $FILENAME
   echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> $FILENAME
 }
@@ -37,7 +58,7 @@ function make_local_env_file {
   echo "====="
   echo ""
 
-  echo "What is the local database name?"
+  echo "What is the local database name (alphanumeric and underscores)?"
 
   read MYSQL_DATABASE
 
@@ -79,7 +100,7 @@ function make_prod_env_file {
 
   read PROD_DB_PORT
 
-  echo "What is the production database name?"
+  echo "What is the production database name (alphanumeric and underscores)?"
 
   read PROD_DB_NAME
 

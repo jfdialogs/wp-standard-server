@@ -6,21 +6,21 @@ else
   echo "Installing deployment hooks..."
   echo ""
 
-  POST_RECEIVE_FILENAME="$PROJECT_DIR/.git/hooks/post-receive"
+  RELAY_DIR="$(dirname $PROJECT_DIR)/deploy-relay"
+  POST_RECEIVE_FILENAME="$RELAY_DIR/hooks/post-receive"
 
-  if [ -h "$POST_RECEIVE_FILENAME" ]; then
-    echo "Deleting previous $POST_RECEIVE_FILENAME file found."
-    echo ""
-
-    rm "$POST_RECEIVE_FILENAME"
+  if [ ! -d "$RELAY_DIR" ]; then
+    git init --bare $RELAY_DIR
   fi
 
-  source "$PROJECT_DIR/.env"
+  if [ ! -f "$POST_RECEIVE_FILENAME" ]; then
+    source "$PROJECT_DIR/.env"
 
-  echo "Installing $POST_RECEIVE_FILENAME symlink."
+    echo "Path: $DOCKER_DIR/.githooks/post-receive"
+
+    ln -s "$DOCKER_DIR/.githooks/post-receive" $POST_RECEIVE_FILENAME
+  fi
+
   echo ""
-
-  ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
-
   echo "Done."
 fi

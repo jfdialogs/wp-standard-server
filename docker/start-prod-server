@@ -5,7 +5,7 @@ if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
 elif [ -z "$APP_ENV" ] || [ "$APP_ENV" != "prod" ]; then
   echo "Running PROD configuraiton in DEV is discouraged."
 else
-  echo "Starting local project server."
+  echo "Starting production server."
   echo ""
 
   source "$PROJECT_DIR/.env"
@@ -28,20 +28,8 @@ else
 
   export APP_ENV
 
-  docker-compose -f "$PROJECT_DIR/compose-prod.yaml" --env-file up -d --remove-orphans
+  docker-compose -f "$PROJECT_DIR/compose-prod.yaml" up -d --remove-orphans
 
   echo ""
-  echo "Server started in background. Waiting for availability (may take longer on first run)..."
-  echo ""
-
-  sleep 5
-
-  WEB_URL="http://$HOSTNAME.local:$WEB_PORT"
-
-  echo "Opening $WEB_URL..."
-  echo ""
-
-  open $WEB_URL
-
-  echo "Done. Use './server stop-prod' to quit."
+  echo "Server started in background. Use './server stop-prod' to quit."
 fi

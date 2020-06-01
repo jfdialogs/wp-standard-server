@@ -27,13 +27,13 @@ if [ ! -n "$PROJECT_DIR" ]; then
 fi
 
 if [ ! -n "$DOCKER_DIR" ]; then
-    DOCKER_DIR="/docker"
+  DOCKER_DIR="/docker"
 fi
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
 else
-  DUMP_FILENAME=$(dump_filename $PROD_DB_NAME)
+  DUMP_FILENAME="$(dump_filename $PROD_DB_NAME)"
 
   echo "This action will drop the '${WORDPRESS_DB_NAME}' local database and import '${PROD_DB_NAME}' from production."
   echo "Continue (y/n)?"
@@ -48,14 +48,16 @@ else
     echo "   saving as ${DUMP_FILENAME}..."
     echo ""
 
-    PROD_CNF=$(cnf_file "prod" $PROD_DB_USER $PROD_DB_PASSWORD)
-    LOCAL_CNF=$(cnf_file "local" $WORDPRESS_DB_USER $WORDPRESS_DB_PASSWORD)
+    PROD_CNF="$(cnf_file "prod" $PROD_DB_USER $PROD_DB_PASSWORD)"
+    LOCAL_CNF="$(cnf_file "local" $WORDPRESS_DB_USER $WORDPRESS_DB_PASSWORD)"
 
-    mysqldump --defaults-extra-file=$PROD_CNF --host $PROD_DB_HOST --port $PROD_DB_PORT --quick --compress $PROD_DB_NAME > "$DUMP_FILENAME"
+    mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
 
-    mysql --defaults-extra-file=$LOCAL_CNF -e "DROP DATABASE IF EXISTS ${WORDPRESS_DB_NAME}"
-    mysql --defaults-extra-file=$LOCAL_CNF -e "CREATE DATABASE IF NOT EXISTS ${WORDPRESS_DB_NAME}"
-    mysql --defaults-extra-file=$LOCAL_CNF $WORDPRESS_DB_NAME < $DUMP_FILENAME
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "DROP DATABASE IF EXISTS ${WORDPRESS_DB_NAME}"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "CREATE DATABASE IF NOT EXISTS ${WORDPRESS_DB_NAME}"
+    mysql --defaults-extra-file="$LOCAL_CNF" "$WORDPRESS_DB_NAME" < "$DUMP_FILENAME"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "USE ${WORDPRESS_DB_NAME}; UPDATE wp_options SET option_value = '$BASE_URL' WHERE option_name = 'siteurl';"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "USE ${WORDPRESS_DB_NAME}; UPDATE wp_options SET option_value = '$BASE_URL' WHERE option_name = 'home';"
 
     echo "Keep database dump file $DUMP_FILENAME (y/n)?"
 
@@ -64,11 +66,11 @@ else
     echo ""
 
     if [ "$ANSWER" != "${ANSWER#[Nn]}" ]; then
-      rm $DUMP_FILENAME
+      rm "$DUMP_FILENAME"
     fi
 
-    rm $PROD_CNF
-    rm $LOCAL_CNF
+    rm "$PROD_CNF"
+    rm "$LOCAL_CNF"
 
     echo "Done."
   else

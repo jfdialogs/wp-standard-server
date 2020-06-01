@@ -3,6 +3,9 @@
 if [ -z "$PROJECT_DIR" ]; then
   echo "PROJECT_DIR is required."
 else
-  source "$PROJECT_DIR/docker/stop-server" &&\
+  source "$PROJECT_DIR/docker/stop-server"
+
+  echo ""
+
   source "$PROJECT_DIR/docker/uninstall-environment"
 fi

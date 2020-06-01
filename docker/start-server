@@ -34,12 +34,10 @@ else
 
   sleep 5
 
-  WEB_URL="http://$HOSTNAME.local:$WEB_PORT"
-
-  echo "Opening $WEB_URL..."
+  echo "Opening $BASE_URL..."
   echo ""
 
-  open $WEB_URL
+  open "$BASE_URL"
 
   echo "Done. Use './server stop' to quit."
 fi
