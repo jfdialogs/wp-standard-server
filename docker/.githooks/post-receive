@@ -1,16 +1,15 @@
 #!/bin/bash
 
-source ../.env
-
-GIT_DIR="/${PROJECT_NAME}-${APP_ENV^^}"
-
-TARGET="/${GIT_DIR}-run"
+GIT_DIR="./deploy-relay"
+PROJECT_DIR="./deploy-repo"
 
 while read oldrev newrev ref
 do
-  BRANCH="$(git rev-parse --symbolic --abbrev-ref $ref)"
+  BRANCH="$(git rev-parse --symbolic --abbrev-ref "$ref")"
 
-  echo "Push received! Deploying branch: ${BRANCH}..."
+  echo "Push received! Deploying branch: $BRANCH..."
 
-  git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
+  git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
+
+  source "$PROJECT_DIR/server start-prod"
 done

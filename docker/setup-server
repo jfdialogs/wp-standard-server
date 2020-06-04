@@ -3,7 +3,7 @@
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
 else
-  if [ ! -n "$(docker inspect -f '{{.State.Running}}' $PROJECT_KEY-data)" ]; then
+  if [ ! -n "$(docker inspect -f '{{.State.Running}}' "$PROJECT_KEY-data")" ]; then
     source "$DOCKER_DIR/start-server"
   fi
 
