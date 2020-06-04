@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GIT_DIR="./deploy-relay"
-PROJECT_DIR="./deploy-repo"
+GIT_DIR="/deploy-relay"
+PROJECT_DIR="/deploy-repo"
 
 while read oldrev newrev ref
 do

@@ -6,7 +6,7 @@ else
   echo "Installing deployment hooks..."
   echo ""
 
-  RELAY_DIR="$(dirname $PROJECT_DIR)/deploy-relay"
+  RELAY_DIR="/deploy-relay"
   POST_RECEIVE_FILENAME="$RELAY_DIR/hooks/post-receive"
 
   if [ ! -d "$RELAY_DIR" ]; then
@@ -17,8 +17,17 @@ else
     source "$PROJECT_DIR/.env"
 
     echo "Path: $DOCKER_DIR/.githooks/post-receive"
+    echo "Link: $POST_RECEIVE_FILENAME"
 
-    ln -s "$DOCKER_DIR/.githooks/post-receive" $POST_RECEIVE_FILENAME
+    if [ -L "$POST_RECEIVE_FILENAME" ]; then
+      echo "Deleting previous symlink $POST_RECEIVE_FILENAME..."
+
+      rm "$POST_RECEIVE_FILENAME"
+
+      echo "Removed."
+    fi
+
+    ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
   fi
 
   echo ""
