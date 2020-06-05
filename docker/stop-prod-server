@@ -6,6 +6,15 @@ else
   echo "Stopping container..."
   echo ""
 
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.prod"
+
+  export PROD_DB_HOST
+  export PROD_DB_PORT
+  export PROD_DB_NAME
+  export PROD_DB_USER
+  export PROD_DB_PASSWORD
+
   docker-compose -f "$PROJECT_DIR/compose-prod.yaml" stop
 
   echo ""

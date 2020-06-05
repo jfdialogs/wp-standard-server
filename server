@@ -9,16 +9,16 @@ export -f cwd
 function has_command {
   COMMAND=$1
 
-  echo $(printf '%s\n' "${COMMANDS[@]}" | grep -e "^$COMMAND$")
+  echo "$(printf '%s\n' "${COMMANDS[@]}" | grep -e "^$COMMAND$")"
 }
 
 SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-export CWD=$(cwd)
+export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
+export COMMANDS=(help start stop start-prod stop-prod use-app use-data tail error-log setup deploy install uninstall)
 
-export COMMANDS=(help start stop start-prod stop-prod use-app use-data setup deploy unlink install uninstall)
 COMMAND=$1
 
 if [ ! -n "$COMMAND" ]; then
@@ -28,8 +28,6 @@ fi
 if [ -f "$PROJECT_DIR/.env" ]; then
   source "$PROJECT_DIR/.env"
 fi
-
-clear
 
 echo ""
 echo "Welcome to the Server Dock!"

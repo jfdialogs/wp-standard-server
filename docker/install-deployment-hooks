@@ -9,26 +9,36 @@ else
   RELAY_DIR="/deploy-relay"
   POST_RECEIVE_FILENAME="$RELAY_DIR/hooks/post-receive"
 
+  source "$PROJECT_DIR/.env"
+
+  echo "Path: $DOCKER_DIR/.githooks/post-receive"
+  echo "Link: $POST_RECEIVE_FILENAME"
+
   if [ ! -d "$RELAY_DIR" ]; then
     git init --bare $RELAY_DIR
   fi
 
-  if [ ! -f "$POST_RECEIVE_FILENAME" ]; then
-    source "$PROJECT_DIR/.env"
+  if [ -d "$PROJECT_DIR/.git" ]; then
+    echo "Removing $PROJECT_DIR/.git directory..."
 
-    echo "Path: $DOCKER_DIR/.githooks/post-receive"
-    echo "Link: $POST_RECEIVE_FILENAME"
+    rm -r "$PROJECT_DIR/.git"
 
-    if [ -L "$POST_RECEIVE_FILENAME" ]; then
-      echo "Deleting previous symlink $POST_RECEIVE_FILENAME..."
-
-      rm "$POST_RECEIVE_FILENAME"
-
-      echo "Removed."
-    fi
-
-    ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
+    echo "Removed."
+    echo ""
   fi
+
+  if [ -L "$POST_RECEIVE_FILENAME" ]; then
+    echo ""
+    echo "Deleting previous symlink $POST_RECEIVE_FILENAME..."
+
+    rm "$POST_RECEIVE_FILENAME"
+
+    echo "Removed."
+  fi
+
+  echo "Making synlink for automated deployment..."
+
+  ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
 
   echo ""
   echo "Done."

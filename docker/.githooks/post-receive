@@ -7,9 +7,11 @@ while read oldrev newrev ref
 do
   BRANCH="$(git rev-parse --symbolic --abbrev-ref "$ref")"
 
-  echo "Push received! Deploying branch: $BRANCH..."
+  if [ "master" == "$BRANCH" ]; then
+    echo "Push received! Deploying branch: $BRANCH..."
 
-  git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
+    git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
 
-  source "$PROJECT_DIR/server start-prod"
+    "$PROJECT_DIR/server" start-prod
+  fi
 done

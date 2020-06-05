@@ -9,7 +9,7 @@ else
   ENV_FILE="$PROJECT_DIR/.env"
 
   if [ -f "$ENV_FILE" ]; then
-    docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$ENV_FILE" exec data bash
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" exec data bash
   else
     echo "Environment file $ENV_FILE missing. Aborting."
   fi

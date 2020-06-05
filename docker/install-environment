@@ -46,7 +46,7 @@ function make_project_env_file {
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> $FILENAME
   echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> $FILENAME
   echo "WEB_PORT=$WEB_PORT" >> $FILENAME
-  echo "" >> $FILENAME
+  echo "BASE_URL=$BASE_URL" >> $FILENAME
   echo "" >> $FILENAME
   echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> $FILENAME
 }
