@@ -10,5 +10,5 @@ else
     COMPOSE_FILE="compose-prod.yaml"
   fi
 
-  docker-compose -f "$COMPOSE_FILE" exec app tail -f -n 50
+  docker-compose -f "$COMPOSE_FILE" ps
 fi

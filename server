@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function cwd {
-  echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+  echo "$( cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
 }
 
 export -f cwd
@@ -17,7 +17,7 @@ SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
-export COMMANDS=(help start stop start-prod stop-prod use-app use-data tail error-log setup deploy install uninstall)
+export COMMANDS=(help start stop start-prod stop-prod use-app use-data status tail error-log setup deploy install uninstall)
 
 COMMAND=$1
 

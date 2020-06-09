@@ -11,7 +11,8 @@ function dump_filename {
 }
 
 function cnf_file {
-  FILENAME="$DOCKER_DIR/data/$1-credentials.cnf"
+  ENV=$1
+  FILENAME="$DOCKER_DIR/data/$ENV-credentials.cnf"
   DB_USER=$2
   DB_PASSWORD=$3
 
@@ -23,7 +24,7 @@ function cnf_file {
 }
 
 if [ ! -n "$PROJECT_DIR" ]; then
-  PROJECT_DIR=/var/lib/mysql
+  PROJECT_DIR="/var/lib/mysql"
 fi
 
 if [ ! -n "$DOCKER_DIR" ]; then
@@ -53,11 +54,11 @@ else
 
     mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
 
-    mysql --defaults-extra-file="$LOCAL_CNF" -e "DROP DATABASE IF EXISTS ${WORDPRESS_DB_NAME}"
-    mysql --defaults-extra-file="$LOCAL_CNF" -e "CREATE DATABASE IF NOT EXISTS ${WORDPRESS_DB_NAME}"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "DROP DATABASE IF EXISTS \`${WORDPRESS_DB_NAME}\`"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "CREATE DATABASE IF NOT EXISTS \`${WORDPRESS_DB_NAME}\`"
     mysql --defaults-extra-file="$LOCAL_CNF" "$WORDPRESS_DB_NAME" < "$DUMP_FILENAME"
-    mysql --defaults-extra-file="$LOCAL_CNF" -e "USE ${WORDPRESS_DB_NAME}; UPDATE wp_options SET option_value = '$BASE_URL' WHERE option_name = 'siteurl';"
-    mysql --defaults-extra-file="$LOCAL_CNF" -e "USE ${WORDPRESS_DB_NAME}; UPDATE wp_options SET option_value = '$BASE_URL' WHERE option_name = 'home';"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "USE \`${WORDPRESS_DB_NAME}\`; UPDATE wp_options SET option_value = '$BASE_URL' WHERE option_name = 'siteurl';"
+    mysql --defaults-extra-file="$LOCAL_CNF" -e "USE \`${WORDPRESS_DB_NAME}\`; UPDATE wp_options SET option_value = '$BASE_URL' WHERE option_name = 'home';"
 
     echo "Keep database dump file $DUMP_FILENAME (y/n)?"
 

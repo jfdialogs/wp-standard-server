@@ -11,6 +11,14 @@ else
 
   if [ "prod" == "$APP_ENV" ]; then
     COMPOSE_FILE="compose-prod.yaml"
+
+    source "$PROJECT_DIR/.env.prod"
+
+    export PROD_DB_HOST
+    export PROD_DB_PORT
+    export PROD_DB_NAME
+    export PROD_DB_USER
+    export PROD_DB_PASSWORD
   fi
 
   if [ -f "$ENV_FILE" ]; then
