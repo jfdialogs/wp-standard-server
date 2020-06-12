@@ -17,6 +17,9 @@ else
   export PROD_DB_USER
   export PROD_DB_PASSWORD
 
+  APP_ENV=prod
+  export APP_ENV
+
   echo "Stopping any running server containers..."
 
   source "$DOCKER_DIR/stop-prod-server"
@@ -24,11 +27,9 @@ else
   echo "Starting server...."
   echo ""
 
-  APP_ENV=prod
+  RUN_COMMAND="docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans"
 
-  export APP_ENV
-
-  docker-compose -f "$PROJECT_DIR/compose-prod.yaml" up -d --remove-orphans
+  su "$SITE_USER" -c "$RUN_COMMAND"
 
   echo ""
   echo "Server started in background. Use './server stop-prod' to quit."

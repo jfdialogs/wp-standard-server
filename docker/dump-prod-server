@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+function cwd {
+  echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+}
+
+function dump_filename {
+  DB_NAME=$1
+
+  echo "$DOCKER_DIR/data/$DB_NAME-$(date '+%Y%m%d%H%M%S').sql"
+}
+
+function cnf_file {
+  ENV=$1
+  FILENAME="$DOCKER_DIR/data/$ENV-credentials.cnf"
+  DB_USER=$2
+  DB_PASSWORD=$3
+
+  echo "[client]" > $FILENAME
+  echo "user=$DB_USER" >> $FILENAME
+  echo "password=$DB_PASSWORD" >> $FILENAME
+
+  echo $FILENAME
+}
+
+if [ ! -n "$PROJECT_DIR" ]; then
+  PROJECT_DIR="/var/lib/mysql"
+fi
+
+if [ ! -n "$DOCKER_DIR" ]; then
+  DOCKER_DIR="/docker"
+fi
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  DUMP_FILENAME="$(dump_filename $PROD_DB_NAME)"
+
+  echo "Dumping remote database ${PROD_DB_HOST}/${PROD_DB_NAME} with user ${PROD_DB_USER}..."
+  echo "   saving as ${DUMP_FILENAME}..."
+  echo ""
+
+  PROD_CNF="$(cnf_file "prod" $PROD_DB_USER $PROD_DB_PASSWORD)"
+
+  mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
+
+  rm "$PROD_CNF"
+
+  echo "Done."
+  echo ""
+fi

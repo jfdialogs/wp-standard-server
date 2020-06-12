@@ -12,12 +12,25 @@ function has_command {
   echo "$(printf '%s\n' "${COMMANDS[@]}" | grep -e "^$COMMAND$")"
 }
 
-SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+if [ -z "$PROJECT_DIR" ]; then
+  HEADLESS=true
+else
+  HEADLESS=false
+fi
+
+if [ "$HEADLESS" = false ]; then
+  SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+  echo ""
+  echo "Welcome to the Server Dock!"
+  echo $SECTION
+  echo ""
+fi
 
 export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
-export COMMANDS=(help start stop start-prod stop-prod use-app use-data status tail error-log setup deploy install uninstall)
+export COMMANDS=(help start stop start-prod stop-prod use-app use-data su-prod status tail error-log setup init-prod install-site-user deploy install uninstall)
 
 COMMAND=$1
 
@@ -28,11 +41,6 @@ fi
 if [ -f "$PROJECT_DIR/.env" ]; then
   source "$PROJECT_DIR/.env"
 fi
-
-echo ""
-echo "Welcome to the Server Dock!"
-echo $SECTION
-echo ""
 
 if [ -n "$(has_command $COMMAND)" ]; then
   if [ "help" != "$COMMAND" ]; then
@@ -51,6 +59,8 @@ if [ -n "$(has_command $COMMAND)" ]; then
   fi
 fi
 
-echo ""
-echo $SECTION
-echo ""
+if [ "$HEADLESS" = false ]; then
+  echo ""
+  echo $SECTION
+  echo ""
+fi

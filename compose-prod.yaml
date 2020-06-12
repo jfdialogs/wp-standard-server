@@ -13,7 +13,8 @@ services:
       WORDPRESS_DB_USER: "${PROD_DB_USER}"
       WORDPRESS_DB_PASSWORD: "${PROD_DB_PASSWORD}"
     volumes:
-      - app:/var/www/html
+      - ./web/wp-content:/var/www/html/wp-content
+      - ./logs:/var/log
 
 volumes:
-  app:
+  web:

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# See https://unix.stackexchange.com/a/210232
+
+function make_site_user {
+  SITE_USER_HOME="/home/$SITE_USER"
+  SITE_USER_SSH_DIR="$SITE_USER_HOME/.ssh"
+  SITE_USER_RSA_PRIV_KEY="$SITE_USER_SSH_DIR/id_rsa"
+  SITE_USER_RSA_PUB_KEY="$SITE_USER_RSA_PRIV_KEY.pub"
+
+  useradd -m -d "$SITE_USER_HOME" -s /bin/bash "$SITE_USER"
+
+  mkdir "$SITE_USER_SSH_DIR"
+  mkdir "$SITE_USER_SSH_DIR/authorized_keys"
+
+  ssh-keygen -t rsa -f "$SITE_USER_RSA_PRIV_KEY" -P ""
+
+  eval $(ssh-agent -s)
+  ssh-add "$SITE_USER_RSA_PRIV_KEY"
+
+  cp "$SITE_USER_RSA_PUB_KEY" "$SITE_USER_SSH_DIR/authorized_keys/id_rsa"
+
+  chown -R "$SITE_USER:$SITE_USER" "$SITE_USER_SSH_DIR"
+  chmod 700 "$SITE_USER_SSH_DIR"
+  chmod 600 "$SITE_USER_SSH_DIR/authorized_keys"
+
+  usermod -a -G docker "$SITE_USER"
+
+  sudo systemctl restart sshd
+}
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  source "$PROJECT_DIR/.env" && echo ""
+  source "$PROJECT_DIR/.env.prod" && echo ""
+
+  if getent passwd "$SITE_USER" > /dev/null 2>&1; then
+    echo "User $SITE_USER already exists, skipping."
+    echo ""
+  else
+    echo "Making home and auth keys for site user $SITE_USER..."
+    echo ""
+
+    make_site_user
+  fi
+
+  echo "Done."
+fi

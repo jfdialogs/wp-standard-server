@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
   
@@ -12,9 +12,9 @@ services:
       - .env
       - .env.local
     volumes:
-#      - .:/var/www:cached
       - ./docker:/docker:cached
-      - ./wp-content:/var/www/html/wp-content:cached
+      - ./web/wp-content:/var/www/html/wp-content:cached
+      - ./logs:/var/log
   
   data:
     container_name: "${PROJECT_KEY}-data"
@@ -30,4 +30,6 @@ services:
 
 volumes:
   web:
+  docker:
+  logs:
   data:
