@@ -10,20 +10,11 @@ docker/data
 
 # WordPress #
 ############
-wp-config-local.php
-wp-cli.local.yml
-wp-content/uploads
-wp-content/blogs.dir/
-wp-content/upgrade/
-wp-content/backup-db/
-wp-content/updraft/
-wp-content/backupwordpress-*/
-wp-content/managewp/backups/
-wp-content/advanced-cache.php
-wp-content/wp-cache-config.php
-sitemap.xml
-sitemap.xml.gz
-*.log
+web
+web/uploads
+web/wp-content/index.php
+!web/wp-content/plugins
+!web/wp-content/themes
 
 # @TODO writable paths
 wp-content/cache/
