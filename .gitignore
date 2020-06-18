@@ -11,7 +11,7 @@ docker/data
 # WordPress #
 ############
 web
-web/uploads
+web/uploads/**/*.*
 web/wp-content/index.php
 !web/wp-content/plugins
 !web/wp-content/themes

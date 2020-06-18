@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
+else
+  echo "Running shell within data container..."
+  echo ""
+
+  source "$PROJECT_DIR/.env"
+
+  COMPOSE_FILE="compose-local.yaml"
+
+  if [ "prod" == "$APP_ENV" ]; then
+    COMPOSE_FILE="compose-prod.yaml"
+
+    source "$PROJECT_DIR/.env.prod"
+
+    if [ -x "$(command -v mysql)" ]; then
+      mysql -u "$PROD_DB_USER" -p"$PROD_DB_PASSWORD" -h "$PROD_DB_HOST" -P "$PROD_DB_PORT" -D "$PROD_DB_NAME"
+    else
+      echo "MySQL client is required but not found."
+    fi
+  else
+    source "$PROJECT_DIR/.env.local"
+
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" exec data mysql -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" -h "$WORDPRESS_DB_HOST" -D "$WORDPRESS_DB_NAME"
+  fi
+fi

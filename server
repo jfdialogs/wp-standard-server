@@ -9,16 +9,26 @@ export -f cwd
 function has_command {
   COMMAND=$1
 
-  echo "$(printf '%s\n' "${COMMANDS[@]}" | grep -e "^$COMMAND$")"
+  if [ -n "$(printf '%s\n' "${COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
+    echo true
+  fi
+
+  if [ "prod" != "$APP_ENV" ] && [ -n "$(printf '%s\n' "${DEV_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
+    echo true
+  fi
+
+  if [ "prod" == "$APP_ENV" ] && [ -n "$(printf '%s\n' "${PROD_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
+    echo true
+  fi
 }
 
-if [ -z "$PROJECT_DIR" ]; then
+if [ -n "$PROJECT_DIR" ]; then
   HEADLESS=true
 else
   HEADLESS=false
 fi
 
-if [ "$HEADLESS" = false ]; then
+if [[ "$HEADLESS" = false ]]; then
   SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
   echo ""
@@ -30,7 +40,9 @@ fi
 export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
-export COMMANDS=(help start stop start-prod stop-prod use-app use-data su-prod status tail error-log setup init-prod install-site-user deploy install uninstall)
+export COMMANDS=(help status tail error-log)
+export DEV_COMMANDS=(start stop use-app use-data use-client status tail error-log setup install uninstall)
+export PROD_COMMANDS=(start-prod stop-prod use-app use-client su-prod status tail error-log init-prod install-site-user deploy)
 
 COMMAND=$1
 
@@ -55,7 +67,9 @@ if [ -n "$(has_command $COMMAND)" ]; then
       echo "Command not found!"
     fi
   else
-    echo "${COMMANDS[@]}"
+    echo "COMMOM { ${COMMANDS[@]}"
+    echo "DEV    { ${DEV_COMMANDS[@]}"
+    echo "PROD   { ${PROD_COMMANDS[@]}"
   fi
 fi
 

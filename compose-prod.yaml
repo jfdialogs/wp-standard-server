@@ -3,18 +3,24 @@ version: '3.1'
 services:
   
   app:
-    image: wordpress
+    container_name: "${PROJECT_KEY}-app"
+    build: .
     restart: always
     ports:
       - 80:80
+      - 443:443
     environment:
       WORDPRESS_DB_HOST: "${PROD_DB_HOST}:${PROD_DB_PORT}"
       WORDPRESS_DB_NAME: "${PROD_DB_NAME}"
       WORDPRESS_DB_USER: "${PROD_DB_USER}"
       WORDPRESS_DB_PASSWORD: "${PROD_DB_PASSWORD}"
     volumes:
-      - ./web/wp-content:/var/www/html/wp-content
-      - ./logs:/var/log
+      - ./web:/var/www/html
+      - "/mnt/${PROJECT_VOLUME}/uploads:/var/www/html/wp-content/uploads"
+      - "/mnt/${PROJECT_VOLUME}/conf/apache:/etc/apache2"
+      - "/mnt/${PROJECT_VOLUME}/conf/letsencrypt:/etc/letsencrypt"
+      - "/mnt/${PROJECT_VOLUME}/logs:/var/log"
 
 volumes:
   web:
+  mnt:

@@ -13,7 +13,7 @@ services:
       - .env.local
     volumes:
       - ./docker:/docker:cached
-      - ./web/wp-content:/var/www/html/wp-content:cached
+      - ./web:/var/www/html:cached
       - ./logs:/var/log
   
   data:

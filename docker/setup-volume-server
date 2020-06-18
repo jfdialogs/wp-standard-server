@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.prod"
+
+  MOUNT="/mnt/$PROJECT_VOLUME"
+
+  if [ -d "$MOUNT" ]; then
+    echo "$MOUNT must be created and mounted before setup."
+  else
+    LOGS_DIR="$MOUNT/logs"
+    UPLOADS_DIR="$MOUNT/uploads"
+    CONF_DIR="$MOUNT/conf"
+    APACHE_DIR="$CONF_DIR/apache"
+    LETSENCRYPT_DIR="$CONF_DIR/letsencrypt"
+
+    if [ -d "$LOGS_DIR" ]; then
+      echo "Making $LOGS_DIR..."
+      echo ""
+
+      mkdir "$LOGS_DIR"
+      chown www-data "$LOGS_DIR"
+      chgrp www-data "$LOGS_DIR"
+    fi
+
+    if [ -d "$UPLOADS_DIR" ]; then
+      echo "Making $UPLOADS_DIR..."
+      echo ""
+
+      mkdir "$UPLOADS_DIR"
+      chown www-data "$UPLOADS_DIR"
+      chgrp www-data "$UPLOADS_DIR"
+    fi
+
+    if [ -d "$CONF_DIR" ]; then
+      echo "Making $CONF_DIR..."
+      echo ""
+
+      mkdir "$CONF_DIR"
+      chown www-data "$CONF_DIR"
+      chgrp www-data "$CONF_DIR"
+    fi
+
+    if [ -d "$APACHE_DIR" ]; then
+      echo "Making $APACHE_DIR..."
+      echo ""
+
+      mkdir "$APACHE_DIR"
+      chown www-data "$APACHE_DIR"
+      chgrp www-data "$APACHE_DIR"
+    fi
+
+    if [ -d "$LETSENCRYPT_DIR" ]; then
+      echo "Making $LETSENCRYPT_DIR..."
+      echo ""
+
+      mkdir "$LETSENCRYPT_DIR"
+      chown www-data "$LETSENCRYPT_DIR"
+      chgrp www-data "$LETSENCRYPT_DIR"
+    fi
+
+    echo "Done."
+  fi
+fi

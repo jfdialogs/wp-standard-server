@@ -11,6 +11,7 @@ else
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"
 
+  export PROJECT_VOLUME
   export PROD_DB_HOST
   export PROD_DB_PORT
   export PROD_DB_NAME
@@ -29,7 +30,17 @@ else
 
   RUN_COMMAND="docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans"
 
-  su "$SITE_USER" -c "$RUN_COMMAND"
+  if [ $(whoami) != "$SITE_USER" ]; then
+    echo "su'ing $SITE_USER..."
+    echo ""
+
+    su -c "cd /deploy-repo ; source /deploy-repo/.env ; docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans"
+  else
+    echo "su'd $SITE_USER..."
+    echo ""
+
+    eval "$RUN_COMMAND"
+  fi
 
   echo ""
   echo "Server started in background. Use './server stop-prod' to quit."

@@ -11,6 +11,10 @@ function make_project_env_file {
 
   read PROJECT_KEY
 
+  echo "What is the project volume name (alphanumeric and underscores only)?"
+
+  read PROJECT_VOLUME
+
   echo "What is the project site username (e.g., dmag)?"
 
   read SITE_USER
@@ -45,6 +49,7 @@ function make_project_env_file {
   echo "Writing $FILENAME"
 
   echo "PROJECT_KEY=$PROJECT_KEY" > $FILENAME
+  echo "PROJECT_VOLUME=$PROJECT_VOLUME" >> $FILENAME
   echo "APP_ENV=$APP_ENV" >> $FILENAME
   echo "" >> $FILENAME
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> $FILENAME

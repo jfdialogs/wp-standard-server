@@ -24,9 +24,11 @@ function make_site_user {
   chmod 700 "$SITE_USER_SSH_DIR"
   chmod 600 "$SITE_USER_SSH_DIR/authorized_keys"
 
-  usermod -a -G docker "$SITE_USER"
+  usermod -aG www-data "$SITE_USER"
+  usermod -aG docker "$SITE_USER"
+  usermod -aG sudo "$SITE_USER"
 
-  sudo systemctl restart sshd
+  service sshd restart
 }
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then

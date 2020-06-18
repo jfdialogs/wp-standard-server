@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-18-04
+# https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04
+# https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04#step-5-%E2%80%94-setting-up-virtual-hosts-recommended
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+elif [ "$APP_ENV" != "prod" ]; then
+  echo "Certicates may only be installed into a prod environment."
+else
+  su "$SITE_USER"
+
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.prod"
+
+  VHOST="/etc/letsencrypt/live/www3.peoplenewspapers.com/$WEB_HOSTNAME.conf"
+
+  ufw status
+
+  "<IfModule mod_ssl.c>" > "$VHOST"
+  "<VirtualHost *:443>" >> "$VHOST"
+  "    ServerAdmin support@dialogs.com" >> "$VHOST"
+  "    ServerName $WEB_HOSTNAME" >> "$VHOST"
+  "    DocumentRoot /var/www/html" >> "$VHOST"
+  "    ErrorLog \${APACHE_LOG_DIR}/error.log" >> "$VHOST"
+  "    CustomLog \${APACHE_LOG_DIR}/access.log combined" >> "$VHOST"
+  ""
+  "SSLCertificateFile /etc/letsencrypt/live/$WEB_HOSTNAME/fullchain.pem" >> "$VHOST"
+  "SSLCertificateKeyFile /etc/letsencrypt/live/$WEB_HOSTNAME/privkey.pem" >> "$VHOST"
+  "Include /etc/letsencrypt/options-ssl-apache.conf" >> "$VHOST"
+  ""
+  "</VirtualHost>" >> "$VHOST"
+  "</IfModule>" >> "$VHOST"
+
+  certbot --apache -d "$WEB_HOSTNAME"
+
+  a2ensite "$WEB_HOSTNAME"
+  a2dissite 000-default.conf
+  apache2ctl configtest
+
+  service apache2 restart
+
+  echo "Done."
+fi
