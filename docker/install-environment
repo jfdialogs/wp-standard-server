@@ -11,10 +11,6 @@ function make_project_env_file {
 
   read PROJECT_KEY
 
-  echo "What is the project volume name (alphanumeric and underscores only)?"
-
-  read PROJECT_VOLUME
-
   echo "What is the project site username (e.g., dmag)?"
 
   read SITE_USER
@@ -22,6 +18,10 @@ function make_project_env_file {
   echo "What is the current application environment (dev, test, prod)?"
 
   read APP_ENV
+
+  echo "What is the current deployment environment (local, dev, prod)?"
+
+  read DEPLOY_ENV
 
   echo "What is the web protocol of the current environment (http or https)?"
 
@@ -49,8 +49,9 @@ function make_project_env_file {
   echo "Writing $FILENAME"
 
   echo "PROJECT_KEY=$PROJECT_KEY" > $FILENAME
-  echo "PROJECT_VOLUME=$PROJECT_VOLUME" >> $FILENAME
-  echo "APP_ENV=$APP_ENV" >> $FILENAME
+  echo ""
+  echo "APP_ENV=PROD" >>$FILENAME
+  echo "DEPLOY_ENV=$DEPLOY_ENV" >>$FILENAME
   echo "" >> $FILENAME
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> $FILENAME
   echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> $FILENAME
@@ -66,6 +67,18 @@ function make_local_env_file {
   echo "Generate Local Environment Variables"
   echo "====="
   echo ""
+
+  echo "What is the project's remote repository url (git@...)?"
+
+  read ORIGIN_REPO
+
+  echo "What is the project's PROD remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_PROD
+
+  echo "What is the project's DEV remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_DEV
 
   echo "What is the local database name (alphanumeric and underscores)?"
 
@@ -86,6 +99,10 @@ function make_local_env_file {
   echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> $FILENAME
   echo "MYSQL_USER=$MYSQL_USER" >> $FILENAME
   echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
+  echo "" >> $FILENAME
+  echo "ORIGIN_REPO=$ORIGIN_REPO" >> $FILENAME
+  echo "DEPLOYMENT_REPO_PROD=$DEPLOYMENT_REPO_PROD" >> $FILENAME
+  echo "DEPLOYMENT_REPO_DEV=$DEPLOYMENT_REPO_DEV" >> $FILENAME
   echo "" >> $FILENAME
   echo "# These are the actual settings for the Wordpress docker installation." >> $FILENAME
   echo "WORDPRESS_DB_HOST=$PROJECT_KEY-data" >> $FILENAME

@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# https://macarthur.me/posts/deploying-code-with-a-git-hook
+
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
+elif [ ! -d "$PROJECT_DIR/.git" ]; then
+  echo ".git directory in project directory is required."
+else
+  echo "Updating git remotes from local environement config..."
+  echo ""
+
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.local"
+
+  if [ -z "$ORIGIN_REPO" ] || [ -z "$DEPLOYMENT_REPO_PROD" ]; then
+    echo "ORIGIN_REPO and DEPLOYMENT_REPO_PROD are required to setup git repo remotes."
+  else
+    echo "Current remotes:"
+    echo ""
+
+    git remote -v
+
+    echo ""
+    echo "ORIGIN_REPO: $ORIGIN_REPO"
+    echo "DEPLOYMENT_REPO_PROD: $DEPLOYMENT_REPO_PROD"
+    echo "DEPLOYMENT_REPO_DEV: $DEPLOYMENT_REPO_DEV"
+    echo ""
+
+    echo "Removing current remotes... Continue (y/n)?"
+
+    read ANSWER
+
+    if [[ "$ANSWER" =~ ^[Yy]$ ]]; then
+      echo "Removing..."
+
+      git remote remove origin
+
+      echo "git remote add origin \"$ORIGIN_REPO\""
+
+      echo "Adding..."
+
+      git remote add origin "$ORIGIN_REPO"
+      git remote set-url --add --push origin "$ORIGIN_REPO" # Re-add this
+      git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD"
+
+      if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_DEV"
+      fi
+
+      echo ""
+      echo "Remotes after update:"
+      echo ""
+
+      git remote -v
+    fi
+
+    echo ""
+    echo "Done."
+  fi
+fi
