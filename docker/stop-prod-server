@@ -9,6 +9,7 @@ else
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"
 
+  export PROJECT_KEY
   export PROD_DB_HOST
   export PROD_DB_PORT
   export PROD_DB_NAME
