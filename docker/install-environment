@@ -100,15 +100,18 @@ function make_local_env_file {
   echo "MYSQL_USER=$MYSQL_USER" >> $FILENAME
   echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
   echo "" >> $FILENAME
-  echo "ORIGIN_REPO=$ORIGIN_REPO" >> $FILENAME
-  echo "DEPLOYMENT_REPO_PROD=$DEPLOYMENT_REPO_PROD" >> $FILENAME
-  echo "DEPLOYMENT_REPO_DEV=$DEPLOYMENT_REPO_DEV" >> $FILENAME
-  echo "" >> $FILENAME
   echo "# These are the actual settings for the Wordpress docker installation." >> $FILENAME
   echo "WORDPRESS_DB_HOST=$PROJECT_KEY-data" >> $FILENAME
   echo "WORDPRESS_DB_NAME=$MYSQL_DATABASE" >> $FILENAME
   echo "WORDPRESS_DB_USER=$MYSQL_USER" >> $FILENAME
   echo "WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
+  echo "" >> $FILENAME
+  echo "ORIGIN_REPO=$ORIGIN_REPO" >> $FILENAME
+  echo "DEPLOYMENT_REPO_PROD=$DEPLOYMENT_REPO_PROD:/deploy-repo" >> $FILENAME
+
+  if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
+    echo "DEPLOYMENT_REPO_DEV=$DEPLOYMENT_REPO_DEV:/deploy-repo" >> $FILENAME
+  fi
 }
 
 function make_prod_env_file {

@@ -8,7 +8,7 @@ else
 
   MOUNT="/mnt/$PROJECT_VOLUME"
 
-  if [ -d "$MOUNT" ]; then
+  if [ ! -d "$MOUNT" ]; then
     echo "$MOUNT must be created and mounted before setup."
   else
     LOGS_DIR="$MOUNT/logs"

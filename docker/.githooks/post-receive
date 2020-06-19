@@ -3,12 +3,23 @@
 GIT_DIR="/deploy-relay"
 PROJECT_DIR="/deploy-repo"
 
+source "$PROJECT_DIR/.env"
+source "$PROJECT_DIR/.env.prod"
+
 while read oldrev newrev ref
 do
   BRANCH="$(git rev-parse --symbolic --abbrev-ref "$ref")"
 
-  if [ "master" == "$BRANCH" ]; then
-    echo "Push received! Deploying branch: $BRANCH..."
+  if [ "master" == "$BRANCH" ] && [ "prod" != "$DEPLOY_ENV" ]; then
+    echo "Push received! Deploying branch $BRANCH for deployment environment "$DEPLOY_ENV"..."
+
+    git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
+
+    "$PROJECT_DIR/server" start-prod
+  fi
+
+  if [ "PROD" == "$BRANCH" ] && [ "prod" == "$DEPLOY_ENV" ]; then
+    echo "Push received! Deploying branch $BRANCH for deployment environment "$DEPLOY_ENV"..."
 
     git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
 

@@ -48,6 +48,8 @@ else
         git remote set-url --add --push origin "$DEPLOYMENT_REPO_DEV"
       fi
 
+      git push --set-upstream origin master
+
       echo ""
       echo "Remotes after update:"
       echo ""
