@@ -107,11 +107,8 @@ function make_local_env_file {
   echo "WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD" >> $FILENAME
   echo "" >> $FILENAME
   echo "ORIGIN_REPO=$ORIGIN_REPO" >> $FILENAME
+  echo "DEPLOYMENT_REPO_DEV=$DEPLOYMENT_REPO_DEV:/deploy-repo" >> $FILENAME
   echo "DEPLOYMENT_REPO_PROD=$DEPLOYMENT_REPO_PROD:/deploy-repo" >> $FILENAME
-
-  if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
-    echo "DEPLOYMENT_REPO_DEV=$DEPLOYMENT_REPO_DEV:/deploy-repo" >> $FILENAME
-  fi
 }
 
 function make_prod_env_file {

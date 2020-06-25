@@ -14,8 +14,8 @@ else
     echo "Own by site user $SITE_USER."
     echo ""
 
-    chown -r www-data "/mnt/$PROJECT_VOLUME"
-    chgrp -r www-data "/mnt/$PROJECT_VOLUME"
+    chown -R www-data "/mnt/$PROJECT_VOLUME"
+    chgrp -R www-data "/mnt/$PROJECT_VOLUME"
 
     echo "Done."
   fi

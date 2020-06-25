@@ -17,7 +17,7 @@ services:
     volumes:
       - ./web:/var/www/html
       - "/mnt/${PROJECT_VOLUME}/uploads:/var/www/html/wp-content/uploads"
-      - "/mnt/${PROJECT_VOLUME}/conf/apache:/etc/apache2"
+      - "/mnt/${PROJECT_VOLUME}/conf/apache:/etc/apache"
       - "/mnt/${PROJECT_VOLUME}/conf/letsencrypt:/etc/letsencrypt"
       - "/mnt/${PROJECT_VOLUME}/logs:/var/log"
 

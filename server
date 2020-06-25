@@ -41,8 +41,8 @@ export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
 export COMMANDS=(help status tail)
-export DEV_COMMANDS=(start stop use-app use-data use-client status tail setup install uninstall config-repo)
-export PROD_COMMANDS=(start-prod stop-prod use-app use-client su-prod status tail init-prod own-volume install-site-user setup-volume deploy)
+export DEV_COMMANDS=(start restart open-site open-admin stop use-app use-data use-client status tail container-logs setup install uninstall config-repo)
+export PROD_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs init-prod own-volume install-site-user setup-volume deploy)
 
 COMMAND=$1
 

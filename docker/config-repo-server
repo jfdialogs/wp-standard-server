@@ -42,10 +42,13 @@ else
 
       git remote add origin "$ORIGIN_REPO"
       git remote set-url --add --push origin "$ORIGIN_REPO" # Re-add this
-      git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD"
 
       if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
         git remote set-url --add --push origin "$DEPLOYMENT_REPO_DEV"
+      fi
+
+      if [ -n "$DEPLOYMENT_REPO_PROD" ]; then
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD"
       fi
 
       git push --set-upstream origin master

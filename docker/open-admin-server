@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  source "$PROJECT_DIR/.env"
+
+  echo "Opening $BASE_URL..."
+
+  open "$BASE_URL/wp-admin"
+fi

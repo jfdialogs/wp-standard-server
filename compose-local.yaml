@@ -28,6 +28,20 @@ services:
       - ./docker:/docker:cached
       - ./docker/data:/var/lib/mysql
 
+#  cli:
+#    container_name: ${PROJECT_KEY}_cli
+#    image: wordpress:cli
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-cli
+#    env_file:
+#      - .env
+#      - .env.local
+#    volumes:
+#      - ./docker:/docker:cached
+#      - ./web:/var/www/html:cached
+#      - ./logs:/var/log
+
 volumes:
   web:
   docker:

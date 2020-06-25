@@ -40,6 +40,11 @@ else
 
   ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
 
+  chown -R www-data /deploy-relay
+  chgrp -R www-data /deploy-relay
+  chgrp -R www-data /deploy-repo
+  chown -R www-data /deploy-repo
+
   echo ""
   echo "Done."
 fi

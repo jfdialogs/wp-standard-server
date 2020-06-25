@@ -7,7 +7,7 @@ function cwd {
 function dump_filename {
   DB_NAME=$1
 
-  echo "$DOCKER_DIR/data/$DB_NAME-$(date '+%Y%m%d%H%M%S').sql"
+  echo "$DOCKER_DIR/data/${PROD_DB_HOST}-${PROD_DB_NAME}-$(date '+%Y%m%d%H%M%S').sql"
 }
 
 function cnf_file {
@@ -31,16 +31,24 @@ if [ ! -n "$DOCKER_DIR" ]; then
   DOCKER_DIR="/docker"
 fi
 
+echo "Project DIR: $PROJECT_DIR"
+echo "Docker DIR:  $DOCKER_DIR"
+echo ""
+
+HAS_MYSQLDUMP="$(type -tp mysqldump)"
+
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
+elif [ -z "$HAS_MYSQLDUMP" ]; then
+  echo "MySQL Client with mysqldump is required to dump database."
 else
   DUMP_FILENAME="$(dump_filename $PROD_DB_NAME)"
 
   echo "Dumping remote database ${PROD_DB_HOST}/${PROD_DB_NAME} with user ${PROD_DB_USER}..."
-  echo "   saving as ${DUMP_FILENAME}..."
+  echo "   saving as file://${DUMP_FILENAME}..."
   echo ""
 
-  PROD_CNF="$(cnf_file "prod" $PROD_DB_USER $PROD_DB_PASSWORD)"
+  PROD_CNF="$(cnf_file prod $PROD_DB_USER $PROD_DB_PASSWORD)"
 
   mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
 

@@ -7,7 +7,7 @@ function cwd {
 function dump_filename {
   DB_NAME=$1
 
-  echo "$DOCKER_DIR/data/$DB_NAME-$(date '+%Y%m%d%H%M%S').sql"
+  echo "$DOCKER_DIR/data/prod-$DB_NAME-$(date '+%Y%m%d%H%M%S').sql"
 }
 
 function cnf_file {
@@ -31,11 +31,16 @@ if [ ! -n "$DOCKER_DIR" ]; then
   DOCKER_DIR="/docker"
 fi
 
+HAS_MYSQLDUMP="$(type -tp mysqldump)"
+
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
+elif [ -z "$HAS_MYSQLDUMP" ]; then
+  echo "MySQL Client with mysqldump is required to dump database."
 else
   DUMP_FILENAME="$(dump_filename $PROD_DB_NAME)"
 
+  echo ""
   echo "This action will drop the '${WORDPRESS_DB_NAME}' local database and import '${PROD_DB_NAME}' from production."
   echo "Continue (y/n)?"
 
@@ -52,7 +57,7 @@ else
     PROD_CNF="$(cnf_file "prod" $PROD_DB_USER $PROD_DB_PASSWORD)"
     LOCAL_CNF="$(cnf_file "local" $WORDPRESS_DB_USER $WORDPRESS_DB_PASSWORD)"
 
-    mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
+    mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --set-gtid-purged=OFF --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
 
     mysql --defaults-extra-file="$LOCAL_CNF" -e "DROP DATABASE IF EXISTS \`${WORDPRESS_DB_NAME}\`"
     mysql --defaults-extra-file="$LOCAL_CNF" -e "CREATE DATABASE IF NOT EXISTS \`${WORDPRESS_DB_NAME}\`"
@@ -75,6 +80,6 @@ else
 
     echo "Done."
   else
-    echo "Aborting setting up database from '${PROD_DB_HOST}'."
+    echo "Aborting setting up database from ${PROD_DB_HOST}."
   fi
 fi

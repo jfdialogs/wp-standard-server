@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
+else
+  PREVENT_WEB_OPEN=true
+
+  export PREVENT_WEB_OPEN
+
+  ./server start
+fi

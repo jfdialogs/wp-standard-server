@@ -10,6 +10,9 @@ while read oldrev newrev ref
 do
   BRANCH="$(git rev-parse --symbolic --abbrev-ref "$ref")"
 
+  echo "Checking for deployment of branch $BRANCH in current environment..."
+  echo ""
+
   if [ "master" == "$BRANCH" ] && [ "prod" != "$DEPLOY_ENV" ]; then
     echo "Push received! Deploying branch $BRANCH for deployment environment "$DEPLOY_ENV"..."
 

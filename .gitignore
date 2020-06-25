@@ -10,11 +10,12 @@ docker/data
 
 # WordPress #
 ############
-web
-web/uploads/**/*.*
+web/*.*
+!web/wp-content/**
+web/wp-admin/**
+web/wp-includes/**
+web/wp-content/uploads/**
 web/wp-content/index.php
-!web/wp-content/plugins
-!web/wp-content/themes
 
 # @TODO writable paths
 wp-content/cache/
