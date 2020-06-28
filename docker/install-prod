@@ -12,7 +12,9 @@ else
 
   "$DOCKER_DIR/install-site-user"
 
-  if [ -z "$HAS_SITE_USER" ] || [ -z "$(getent passwd $SITE_USER)" ]; then
+  HAS_SITE_USER="$(getent passwd $SITE_USER)"
+
+  if [ -z "$HAS_SITE_USER" ]; then
     echo "Installation failed on missing site user $SITE_USER."
   else
     echo "What is the git repo ssh address (format: git@github:[org]/[project-name].git)?"
@@ -34,8 +36,6 @@ else
         echo "Git repo $GIT_REPO not found."
       else
         "$DOCKER_DIR/own-project"
-
-        HAS_SITE_USER="$(getent passwd $SITE_USER)"
 
         INSTALL_STEP[1]="$DOCKER_DIR/install-deployment-hooks"
         INSTALL_STEP[2]="$DOCKER_DIR/init-prod-server"
