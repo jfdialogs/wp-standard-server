@@ -10,32 +10,33 @@ else
   DEPLOY_ENV=prod
   SITE_USER=dmag
 
-  echo "What is the git repo ssh address (format: git@github:[org]/[project-name].git)?"
+  "$DOCKER_DIR/install-site-user"
 
-  read GIT_REPO
-
-  if [ -z "$GIT_REPO" ]; then
-    echo "Install canceled."
+  if [ -z "$HAS_SITE_USER" ] || [ -z "$(getent passwd $SITE_USER)" ]; then
+    echo "Installation failed on missing site user $SITE_USER."
   else
-    export PROJECT_DIR
-    export DOCKER_DIR
-    export RELAY_DIR
-    export SITE_USER
-    export GIT_REPO
+    echo "What is the git repo ssh address (format: git@github:[org]/[project-name].git)?"
 
-    git clone "$GIT_REPO" "$PROJECT_DIR"
+    read GIT_REPO
 
-    if [ ! -s "$PROJECT_DIR/server" ]; then
-      echo "Git repo $GIT_REPO not found."
+    if [ -z "$GIT_REPO" ]; then
+      echo "Install canceled."
     else
-      "$DOCKER_DIR/own-project"
-      "$DOCKER_DIR/install-site-user"
+      export PROJECT_DIR
+      export DOCKER_DIR
+      export RELAY_DIR
+      export SITE_USER
+      export GIT_REPO
 
-      HAS_SITE_USER="$(getent passwd $SITE_USER)"
+      git clone "$GIT_REPO" "$PROJECT_DIR"
 
-      if [ -z "$HAS_SITE_USER" ]; then
-        echo "Installation failed on missing site user $SITE_USER."
+      if [ ! -s "$PROJECT_DIR/server" ]; then
+        echo "Git repo $GIT_REPO not found."
       else
+        "$DOCKER_DIR/own-project"
+
+        HAS_SITE_USER="$(getent passwd $SITE_USER)"
+
         INSTALL_STEP[1]="$DOCKER_DIR/install-deployment-hooks"
         INSTALL_STEP[2]="$DOCKER_DIR/init-prod-server"
         INSTALL_STEP[2]="$DOCKER_DIR/own-volume"
