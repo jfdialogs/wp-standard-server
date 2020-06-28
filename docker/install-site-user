@@ -37,7 +37,6 @@ function make_site_user {
 
   echo ""
   echo "Hit ENTER to continue."
-  echo ""
 
   read NOTHING
 
@@ -58,6 +57,8 @@ else
     echo ""
 
     make_site_user
+
+    echo ""
   fi
 
   echo "Done."

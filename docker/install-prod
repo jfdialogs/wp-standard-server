@@ -18,6 +18,8 @@ else
 
   bash <(wget -qO - https://raw.githubusercontent.com/jfdialogs/wp-standard-server/master/docker/install-site-user)
 
+  echo ""
+
   HAS_SITE_USER="$(getent passwd $SITE_USER)"
 
   if [ -z "$HAS_SITE_USER" ]; then
