@@ -29,12 +29,16 @@ function make_site_user {
 
   echo "$SITE_USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/$SITE_USER"
 
-  echo "Copy and paste the following $SITE_USER public key into the Github repository Deploy Keys config:"
+  echo "Copy and paste the following $SITE_USER public key into the project's"
+  echo "Github repository Deploy Keys config:"
   echo ""
 
   cat "SITE_USER_RSA_PUB_KEY"
 
+  echo "Hit ENTER to continue."
   echo ""
+
+  read NOTHING
 
   service sshd restart
 }
