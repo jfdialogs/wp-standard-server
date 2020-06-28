@@ -11,6 +11,7 @@ function make_site_user {
   useradd -m -d "$SITE_USER_HOME" -s /bin/bash "$SITE_USER"
 
   mkdir "$SITE_USER_SSH_DIR"
+  touch "$SITE_USER_SSH_DIR/known_hosts"
   touch "$SITE_USER_SSH_DIR/authorized_keys"
 
   ssh-keygen -t rsa -f "$SITE_USER_RSA_PRIV_KEY" -P "" -C "support@dialogs.com"
@@ -20,6 +21,7 @@ function make_site_user {
 
   chown -R "$SITE_USER:$SITE_USER" "$SITE_USER_SSH_DIR"
   chmod 700 "$SITE_USER_SSH_DIR"
+  chmod 600 "$SITE_USER_SSH_DIR/known_hosts"
   chmod 600 "$SITE_USER_SSH_DIR/authorized_keys"
   chmod go-w "$SITE_USER_HOME"
 
