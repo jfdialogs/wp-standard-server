@@ -41,11 +41,11 @@ else
         INSTALL_STEP[2]="$DOCKER_DIR/own-volume"
         INSTALL_STEP[2]="$DOCKER_DIR/setup-volume"
 
-        STEPS="$(printf '%s;\n' "${PROD_COMMANDS[@]}")
+        STEPS="$(printf '%s;\n' ${INSTALL_STEP[@]})"
 
         echo "Performing steps as $SITE_USER:"
         echo ""
-        echo "$(printf '  - %s;\n' "${PROD_COMMANDS[@]}")
+        echo "$(printf '  - %s;\n' ${INSTALL_STEP[@]})"
         echo ""
 
         # Run all install steps as dmag user
