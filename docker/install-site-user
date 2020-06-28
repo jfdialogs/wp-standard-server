@@ -54,7 +54,9 @@ else
       source "$PROJECT_DIR/.env.prod"
     fi
 
-    if getent passwd "$SITE_USER" > /dev/null 2>&1; then
+    HAS_SITE_USER="$(getent passwd $SITE_USER)"
+
+    if [ -n "$HAS_SITE_USER" ]; then
       echo "User $SITE_USER already exists, skipping."
       echo ""
     else
@@ -65,11 +67,12 @@ else
 
       echo ""
 
-      if getent passwd "$SITE_USER" > /dev/null 2>&1; then
+      HAS_SITE_USER="$(getent passwd $SITE_USER)"
+
+      if [ -z "$HAS_SITE_USER" ]; then
         echo "Error, user $SITE_USER not installed."
-        echo ""
       else
-        echo "Site user $SITE_USER installed."
+        echo "Site user $SITE_USER successfully installed."
       fi
     fi
   fi
