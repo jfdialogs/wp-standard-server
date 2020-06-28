@@ -36,7 +36,7 @@ function make_site_user {
   cat "$SITE_USER_RSA_PUB_KEY"
 
   echo ""
-  echo "Hit ENTER to continue."
+  echo "Hit any key to continue."
 
   read NOTHING
 
@@ -64,8 +64,13 @@ else
       make_site_user
 
       echo ""
+
+      if getent passwd "$SITE_USER" > /dev/null 2>&1; then
+        echo "Error, user $SITE_USER not installed."
+        echo ""
+      else
+        echo "Site user $SITE_USER installed."
+      fi
     fi
   fi
-
-  echo "Done."
 fi

@@ -61,6 +61,6 @@ else
     fi
 
     echo ""
-    echo "Done."
+    echo "Server repository configured for deployment."
   fi
 fi

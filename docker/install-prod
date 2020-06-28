@@ -64,8 +64,8 @@ else
         # Run all install steps as dmag user
         su -c "$STEPS" - "$SITE_USER"
       fi
+
+      echo "Production server installed."
     fi
   fi
-
-  echo "Done."
 fi
