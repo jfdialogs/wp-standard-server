@@ -33,7 +33,7 @@ function make_site_user {
   echo "Github repository Deploy Keys config:"
   echo ""
 
-  cat "SITE_USER_RSA_PUB_KEY"
+  cat "$SITE_USER_RSA_PUB_KEY"
 
   echo "Hit ENTER to continue."
   echo ""
