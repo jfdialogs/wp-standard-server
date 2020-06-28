@@ -10,6 +10,12 @@ else
   DEPLOY_ENV=prod
   SITE_USER=dmag
 
+  export PROJECT_DIR
+  export RELAY_DIR
+  export DOCKER_DIR
+  export DEPLOY_ENV
+  export SITE_USER
+
   bash <(wget -qO - https://raw.githubusercontent.com/jfdialogs/wp-standard-server/master/docker/install-site-user)
 
   HAS_SITE_USER="$(getent passwd $SITE_USER)"
@@ -24,12 +30,6 @@ else
     if [ -z "$GIT_REPO" ]; then
       echo "Install canceled."
     else
-      export PROJECT_DIR
-      export DOCKER_DIR
-      export RELAY_DIR
-      export SITE_USER
-      export GIT_REPO
-
       git clone "$GIT_REPO" "$PROJECT_DIR"
 
       if [ ! -s "$PROJECT_DIR/server" ]; then
