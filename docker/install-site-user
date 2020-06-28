@@ -11,22 +11,30 @@ function make_site_user {
   useradd -m -d "$SITE_USER_HOME" -s /bin/bash "$SITE_USER"
 
   mkdir "$SITE_USER_SSH_DIR"
-  mkdir "$SITE_USER_SSH_DIR/authorized_keys"
+  touch "$SITE_USER_SSH_DIR/authorized_keys"
 
   ssh-keygen -t rsa -f "$SITE_USER_RSA_PRIV_KEY" -P ""
 
   eval $(ssh-agent -s)
   ssh-add "$SITE_USER_RSA_PRIV_KEY"
 
-  cp "$SITE_USER_RSA_PUB_KEY" "$SITE_USER_SSH_DIR/authorized_keys/id_rsa"
-
   chown -R "$SITE_USER:$SITE_USER" "$SITE_USER_SSH_DIR"
   chmod 700 "$SITE_USER_SSH_DIR"
   chmod 600 "$SITE_USER_SSH_DIR/authorized_keys"
+  chmod go-w "$SITE_USER_HOME"
 
   usermod -aG www-data "$SITE_USER"
   usermod -aG docker "$SITE_USER"
   usermod -aG sudo "$SITE_USER"
+
+  echo "$SITE_USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/$SITE_USER"
+
+  echo "Copy and paste the following $SITE_USER public key into the Github repository Deploy Keys config:"
+  echo ""
+
+  cat "SITE_USER_RSA_PUB_KEY"
+
+  echo ""
 
   service sshd restart
 }
@@ -34,8 +42,8 @@ function make_site_user {
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
 else
-  source "$PROJECT_DIR/.env" && echo ""
-  source "$PROJECT_DIR/.env.prod" && echo ""
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.prod"
 
   if getent passwd "$SITE_USER" > /dev/null 2>&1; then
     echo "User $SITE_USER already exists, skipping."

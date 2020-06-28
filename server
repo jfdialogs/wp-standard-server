@@ -42,7 +42,7 @@ export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
 export COMMANDS=(help status tail)
 export DEV_COMMANDS=(start restart open-site open-admin stop use-app use-data use-client status tail container-logs setup install uninstall config-repo)
-export PROD_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs init-prod own-volume install-site-user setup-volume deploy)
+export PROD_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs deploy)
 
 COMMAND=$1
 
@@ -67,10 +67,13 @@ if [ -n "$(has_command $COMMAND)" ]; then
       echo "Command not found!"
     fi
   else
-    echo "COMMOM { ${COMMANDS[@]}"
+    echo "APP MODE"
+    echo "ALL    { ${COMMANDS[@]}"
     echo "DEV    { ${DEV_COMMANDS[@]}"
     echo "PROD   { ${PROD_COMMANDS[@]}"
   fi
+else
+  echo "Command $COMMAND not found for $APP_ENV."
 fi
 
 if [ "$HEADLESS" = false ]; then

@@ -2,8 +2,8 @@
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
-elif [ -z "$APP_ENV" ] || [ "$APP_ENV" != "prod" ]; then
-  echo "Running PROD configuraiton in DEV is discouraged."
+elif [ -z "$DEPLOY_ENV" ] || [ "$DEPLOY_ENV" != "prod" ]; then
+  echo "Running PROD configuraiton in non-PROD deployment environment is discouraged."
 else
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"
@@ -11,7 +11,7 @@ else
   if [ -z "$PROJECT_VOLUME" ]; then
     echo "PROJECT_VOLUME is required."
   else
-    echo "Own by site user $SITE_USER."
+    echo "Owning by site user $SITE_USER..."
     echo ""
 
     chown -R www-data "/mnt/$PROJECT_VOLUME"

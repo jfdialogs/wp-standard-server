@@ -35,7 +35,7 @@ else
     echo "su'ing $SITE_USER..."
     echo ""
 
-    su -c "cd /deploy-repo ; source /deploy-repo/.env ; docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans"
+    su -c "cd $PROJECT_DIR ; source $PROJECT_DIR/.env ; docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans" - $SITE_USER
   else
     echo "su'd $SITE_USER..."
     echo ""

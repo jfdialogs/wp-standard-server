@@ -13,8 +13,8 @@ else
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.local"
 
-  if [ -z "$ORIGIN_REPO" ] || [ -z "$DEPLOYMENT_REPO_PROD" ]; then
-    echo "ORIGIN_REPO and DEPLOYMENT_REPO_PROD are required to setup git repo remotes."
+  if [ -z "$ORIGIN_REPO" ]; then
+    echo "ORIGIN_REPO is required to setup git repo remotes."
   else
     echo "Current remotes:"
     echo ""

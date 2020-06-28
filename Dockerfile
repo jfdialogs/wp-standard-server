@@ -1,6 +1,7 @@
 FROM wordpress
 
 RUN apt-get update &&\
+    apt-get --assume-yes install dnsutils &&\
     apt-get --assume-yes install software-properties-common &&\
     add-apt-repository ppa:certbot/certbot &&\
     apt-get --assume-yes install python-certbot-apache &&\

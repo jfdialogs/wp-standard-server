@@ -15,7 +15,12 @@ else
   echo "Link: $POST_RECEIVE_FILENAME"
 
   if [ ! -d "$RELAY_DIR" ]; then
-    git init --bare $RELAY_DIR
+    sudo mkdir -m 775 "$RELAY_DIR"
+    sudo chown -R www-data "$RELAY_DIR"
+    sudo chgrp -R www-data "$RELAY_DIR"
+    sudo chmod 775 "$RELAY_DIR"
+
+    git init --bare "$RELAY_DIR"
   fi
 
   if [ -d "$PROJECT_DIR/.git" ]; then
@@ -39,11 +44,6 @@ else
   echo "Making synlink for automated deployment..."
 
   ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
-
-  chown -R www-data /deploy-relay
-  chgrp -R www-data /deploy-relay
-  chgrp -R www-data /deploy-repo
-  chown -R www-data /deploy-repo
 
   echo ""
   echo "Done."

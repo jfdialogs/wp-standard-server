@@ -23,10 +23,6 @@ function make_project_env_file() {
 
   read SITE_EXTERNAL_IP
 
-  echo "What is the current application environment (dev, prod)?"
-
-  read APP_ENV
-
   echo "What is the current deployment environment (local, dev, prod)?"
 
   read DEPLOY_ENV
@@ -62,7 +58,7 @@ function make_project_env_file() {
   echo "SITE_USER=$SITE_USER" >>$FILENAME
   echo "SITE_EXTERNAL_IP=$SITE_EXTERNAL_IP" >>$FILENAME
   echo ""
-  echo "APP_ENV=PROD" >>$FILENAME
+  echo "APP_ENV=prod" >>$FILENAME
   echo "DEPLOY_ENV=$DEPLOY_ENV" >>$FILENAME
   echo "" >>$FILENAME
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >>$FILENAME
@@ -127,6 +123,14 @@ function make_project_directories() {
   fi
 }
 
+if [ -z "$PROJECT_DIR" ]; then
+  PROJECT_DIR=/deploy-repo
+fi
+
+if [ -z "$DOCKER_DIR" ]; then
+  DOCKER_DIR="$PROJECT_DIR/docker"
+fi
+
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
 else
@@ -138,7 +142,7 @@ else
 
   source "$PROJECT_DIR/.env.prod" && echo ""
 
-  "$PROJECT_DIR/server install-site-user"
+  "$PROJECT_DIR/server" install-site-user
 
   touch "$DOCKER_DIR/.installed"
 
