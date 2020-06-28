@@ -35,11 +35,11 @@ else
       if [ -z "$PROJECT_DIR" ]; then
         mkdir -m 777 "$PROJECT_DIR"
         chown -R "$SITE_USER" "$PROJECT_DIR"
-
-        su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
       else
         rm -R "$PROJECT_DIR"
       fi
+
+      su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
       if [ ! -s "$PROJECT_DIR/server" ]; then
         echo "Git repo $GIT_REPO not found."
