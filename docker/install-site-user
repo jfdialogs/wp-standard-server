@@ -46,19 +46,25 @@ function make_site_user {
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
 else
-  source "$PROJECT_DIR/.env"
-  source "$PROJECT_DIR/.env.prod"
-
-  if getent passwd "$SITE_USER" > /dev/null 2>&1; then
-    echo "User $SITE_USER already exists, skipping."
-    echo ""
+  if [ -z "$SITE_USER" ] && [ ! -f "$PROJECT_DIR/.env" ]; then
+    echo "Missing SITE_USER and no .env file."
   else
-    echo "Making home and auth keys for site user $SITE_USER..."
-    echo ""
+    if [ -z "$SITE_USER" ]; then
+      source "$PROJECT_DIR/.env"
+      source "$PROJECT_DIR/.env.prod"
+    fi
 
-    make_site_user
+    if getent passwd "$SITE_USER" > /dev/null 2>&1; then
+      echo "User $SITE_USER already exists, skipping."
+      echo ""
+    else
+      echo "Making home and auth keys for site user $SITE_USER..."
+      echo ""
 
-    echo ""
+      make_site_user
+
+      echo ""
+    fi
   fi
 
   echo "Done."

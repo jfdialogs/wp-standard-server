@@ -35,6 +35,8 @@ else
       if [ ! -d "$PROJECT_DIR" ]; then
         mkdir -m 777 "$PROJECT_DIR"
         chown -R "$SITE_USER" "$PROJECT_DIR"
+        mkdir -m 777 "$RELAY_DIR"
+        chown -R "$SITE_USER" "$RELAY_DIR"
       else
         rm -R "$PROJECT_DIR"
       fi
@@ -42,7 +44,7 @@ else
       su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
       if [ ! -s "$PROJECT_DIR/server" ]; then
-        echo "Git repo $GIT_REPO not found."
+        echo "Git repo $GIT_REPO not found or install error."
         echo ""
       else
         "$DOCKER_DIR/own-project"
