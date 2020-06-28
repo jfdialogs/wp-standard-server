@@ -36,7 +36,7 @@ function make_site_user {
   cat "$SITE_USER_RSA_PUB_KEY"
 
   echo ""
-  echo "Hit any key to continue."
+  echo "Hit ENTER to continue."
 
   read NOTHING
 

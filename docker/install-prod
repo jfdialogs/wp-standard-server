@@ -41,7 +41,11 @@ else
         rm -R "$PROJECT_DIR"
       fi
 
+      echo "Git cloing $GIT_REPO into $PROJECT_DIR as $SITE_USER"
+
       su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
+
+      echo ""
 
       if [ ! -s "$PROJECT_DIR/server" ]; then
         echo "Git repo $GIT_REPO not found or install error."
