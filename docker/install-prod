@@ -10,7 +10,7 @@ else
   DEPLOY_ENV=prod
   SITE_USER=dmag
 
-  "$DOCKER_DIR/install-site-user"
+  bash <(wget -qO - https://raw.githubusercontent.com/jfdialogs/wp-standard-server/master/docker/install-site-user)
 
   HAS_SITE_USER="$(getent passwd $SITE_USER)"
 
