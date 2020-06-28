@@ -30,7 +30,7 @@ else
     if [ -z "$GIT_REPO" ]; then
       echo "Install canceled."
     else
-      git clone "$GIT_REPO" "$PROJECT_DIR"
+      su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
       if [ ! -s "$PROJECT_DIR/server" ]; then
         echo "Git repo $GIT_REPO not found."
