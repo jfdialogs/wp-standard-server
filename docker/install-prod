@@ -32,7 +32,7 @@ else
     if [ -z "$GIT_REPO" ]; then
       echo "Install canceled."
     else
-      if [ -z "$PROJECT_DIR" ]; then
+      if [ ! -d "$PROJECT_DIR" ]; then
         mkdir -m 777 "$PROJECT_DIR"
         chown -R "$SITE_USER" "$PROJECT_DIR"
       else
