@@ -76,8 +76,6 @@ else
 
       make_site_user
 
-      echo ""
-
       HAS_SITE_USER="$(getent passwd $SITE_USER)"
 
       if [ -z "$HAS_SITE_USER" ]; then
