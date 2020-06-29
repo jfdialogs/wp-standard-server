@@ -2,8 +2,6 @@
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$RELAY_DIR" ]; then
   echo "PROJECT_DIR and RELAY_DIR are required."
-elif [ -z "$DEPLOY_ENV" ] || [ "$DEPLOY_ENV" != "prod" ]; then
-  echo "Running PROD configuraiton when not in PROD is discouraged."
 else
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"
@@ -20,5 +18,4 @@ else
   chmod -R 777 "$RELAY_DIR"
 
   echo "Done."
-  fi
 fi
