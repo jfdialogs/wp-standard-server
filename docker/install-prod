@@ -29,6 +29,8 @@ else
 
     read GIT_REPO
 
+    echo ""
+
     if [ -z "$GIT_REPO" ]; then
       echo "Install canceled."
     else
@@ -49,6 +51,7 @@ else
       chgrp -R "$SITE_USER" "$RELAY_DIR"
 
       echo "Git cloing $GIT_REPO into $PROJECT_DIR as $SITE_USER"
+      echo ""
 
       su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
