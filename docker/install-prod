@@ -61,10 +61,10 @@ else
         echo "Git repo $GIT_REPO not found or install error."
         echo ""
       else
-        "$DOCKER_DIR/init-prod-server"
-        "$DOCKER_DIR/install-deployment-hooks"
-        "$DOCKER_DIR/own-project"
-        "$DOCKER_DIR/setup-volume"
+        "$DOCKER_DIR/init-prod-server" && echo ""
+        "$DOCKER_DIR/install-deployment-hooks" && echo ""
+        "$DOCKER_DIR/own-project" && echo ""
+        "$DOCKER_DIR/setup-volume" && echo ""
       fi
 
       echo "Production server installed."
