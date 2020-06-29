@@ -136,17 +136,19 @@ if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
 else
   make_project_env_file
 
-  source "$PROJECT_DIR/.env" && echo ""
+  source "$PROJECT_DIR/.env"
+
+  echo ""
 
   make_prod_env_file
 
-  source "$PROJECT_DIR/.env.prod" && echo ""
+  source "$PROJECT_DIR/.env.prod"
 
-  "$PROJECT_DIR/server" install-site-user
+  echo ""
 
   touch "$DOCKER_DIR/.installed"
 
-  echo $(date '+%Y-%m-%d %H:%M:%S') >>"$DOCKER_DIR/.installed"
+  echo $(date '+%Y-%m-%d %H:%M:%S') > "$DOCKER_DIR/.installed"
 
   echo "Done."
 fi

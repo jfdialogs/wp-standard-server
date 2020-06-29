@@ -15,13 +15,15 @@ else
   echo "Link: $POST_RECEIVE_FILENAME"
 
   if [ ! -d "$RELAY_DIR" ]; then
+    rm -R "$RELAY_DIR"
+
     sudo mkdir -m 775 "$RELAY_DIR"
     sudo chown -R www-data "$RELAY_DIR"
     sudo chgrp -R www-data "$RELAY_DIR"
     sudo chmod 775 "$RELAY_DIR"
-
-    git init --bare "$RELAY_DIR"
   fi
+
+  git init --bare "$RELAY_DIR"
 
   if [ -d "$PROJECT_DIR/.git" ]; then
     echo "Removing $PROJECT_DIR/.git directory..."
