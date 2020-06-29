@@ -42,8 +42,8 @@ else
         rm -d "$RELAY_DIR"
       fi
 
-      mkdir -m 777 "$PROJECT_DIR"
-      mkdir -m 777 "$RELAY_DIR"
+      mkdir "$PROJECT_DIR"
+      mkdir "$RELAY_DIR"
 
       chown -R "$SITE_USER" "$PROJECT_DIR"
       chown -R "$SITE_USER" "$RELAY_DIR"

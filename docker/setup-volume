@@ -17,7 +17,7 @@ else
     APACHE_DIR="$CONF_DIR/apache"
     LETSENCRYPT_DIR="$CONF_DIR/letsencrypt"
 
-    if [ -d "$LOGS_DIR" ]; then
+    if [ ! -d "$LOGS_DIR" ]; then
       echo "Making $LOGS_DIR..."
       echo ""
 
@@ -26,7 +26,7 @@ else
       chgrp www-data "$LOGS_DIR"
     fi
 
-    if [ -d "$UPLOADS_DIR" ]; then
+    if [ ! -d "$UPLOADS_DIR" ]; then
       echo "Making $UPLOADS_DIR..."
       echo ""
 
@@ -35,7 +35,7 @@ else
       chgrp www-data "$UPLOADS_DIR"
     fi
 
-    if [ -d "$CONF_DIR" ]; then
+    if [ ! -d "$CONF_DIR" ]; then
       echo "Making $CONF_DIR..."
       echo ""
 
@@ -44,7 +44,7 @@ else
       chgrp www-data "$CONF_DIR"
     fi
 
-    if [ -d "$APACHE_DIR" ]; then
+    if [ ! -d "$APACHE_DIR" ]; then
       echo "Making $APACHE_DIR..."
       echo ""
 
@@ -53,7 +53,7 @@ else
       chgrp www-data "$APACHE_DIR"
     fi
 
-    if [ -d "$LETSENCRYPT_DIR" ]; then
+    if [ ! -d "$LETSENCRYPT_DIR" ]; then
       echo "Making $LETSENCRYPT_DIR..."
       echo ""
 
