@@ -61,27 +61,10 @@ else
         echo "Git repo $GIT_REPO not found or install error."
         echo ""
       else
-        INSTALL_STEP[0]="PROJECT_DIR=$PROJECT_DIR"
-        INSTALL_STEP[1]="export\ PROJECT_DIR"
-        INSTALL_STEP[2]="DOCKER_DIR=$DOCKER_DIR"
-        INSTALL_STEP[3]="export\ DOCKER_DIR"
-        INSTALL_STEP[2]="RELAY_DIR=$RELAY_DIR"
-        INSTALL_STEP[3]="export\ RELAY_DIR"
-
-        INSTALL_STEP[4]="$DOCKER_DIR/init-prod-server"
-        INSTALL_STEP[5]="sudo\ $DOCKER_DIR/own-project"
-        INSTALL_STEP[6]="sudo\ $DOCKER_DIR/setup-volume"
-        INSTALL_STEP[7]="$DOCKER_DIR/install-deployment-hooks"
-
-        INSTALL_STEPS="$(printf '%s;\n' ${INSTALL_STEP[@]})"
-
-        echo "Performing steps as $SITE_USER:"
-        echo ""
-        echo "$(printf '  - %s;\n' ${INSTALL_STEP[@]})"
-        echo ""
-
-        # Run all install steps as dmag user
-        su -c "$INSTALL_STEPS" - "$SITE_USER"
+        "$DOCKER_DIR/init-prod-server"
+        "$DOCKER_DIR/install-deployment-hooks"
+        "$DOCKER_DIR/own-project"
+        "$DOCKER_DIR/setup-volume"
       fi
 
       echo "Production server installed."
