@@ -8,7 +8,7 @@ function make_site_user {
   SITE_USER_RSA_PRIV_KEY="$SITE_USER_SSH_DIR/id_rsa"
   SITE_USER_RSA_PUB_KEY="$SITE_USER_RSA_PRIV_KEY.pub"
 
-  KNOWH_HOSTS="$SITE_USER_SSH_DIR/known_hosts"
+  KNOWN_HOSTS="$SITE_USER_SSH_DIR/known_hosts"
   AUTHORIZED_KEYS="$SITE_USER_SSH_DIR/authorized_keys"
 
   useradd -m -d "$SITE_USER_HOME" -s /bin/bash "$SITE_USER"
