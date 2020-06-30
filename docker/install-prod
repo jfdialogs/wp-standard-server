@@ -65,6 +65,10 @@ else
         "$DOCKER_DIR/install-deployment-hooks" && echo ""
         "$DOCKER_DIR/own-project" && echo ""
         "$DOCKER_DIR/setup-volume" && echo ""
+
+        cd "$PROJECT_DIR"
+
+        echo "Start prod server with './server start-prod'."
       fi
 
       echo "Production server installed."
