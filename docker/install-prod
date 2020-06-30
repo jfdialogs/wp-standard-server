@@ -69,6 +69,7 @@ else
         cd "$PROJECT_DIR"
 
         echo "Start prod server with './server start-prod'."
+        echo ""
       fi
 
       echo "Production server installed."

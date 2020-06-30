@@ -9,7 +9,7 @@ if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
 elif [ "$APP_ENV" != "prod" ]; then
   echo "Certicates may only be installed into a prod environment."
 else
-  su "$SITE_USER"
+  su -m - "$SITE_USER"
 
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"

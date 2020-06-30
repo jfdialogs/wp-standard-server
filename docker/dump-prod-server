@@ -31,11 +31,21 @@ if [ ! -n "$DOCKER_DIR" ]; then
   DOCKER_DIR="/docker"
 fi
 
+source "$PROJECT_DIR/.env"
+source "$PROJECT_DIR/.env.prod"
+
 echo "Project DIR: $PROJECT_DIR"
 echo "Docker DIR:  $DOCKER_DIR"
 echo ""
 
 HAS_MYSQLDUMP="$(type -tp mysqldump)"
+dumper=mysqldump
+
+if [ -n "$MYSQLDUMP_EXE" ]; then
+  dumper="$MYSQLDUMP_EXE"
+
+  HAS_MYSQLDUMP=true
+fi
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
@@ -50,7 +60,8 @@ else
 
   PROD_CNF="$(cnf_file prod $PROD_DB_USER $PROD_DB_PASSWORD)"
 
-  mysqldump --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" > "$DUMP_FILENAME"
+
+  "$dumper" --defaults-extra-file=$PROD_CNF --host "$PROD_DB_HOST" --port "$PROD_DB_PORT" --quick --compress "$PROD_DB_NAME" --column-statistics=0 > "$DUMP_FILENAME"
 
   rm "$PROD_CNF"
 

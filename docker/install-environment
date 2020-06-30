@@ -43,6 +43,14 @@ function make_project_env_file {
     BASE_URL="$BASE_URL:$WEB_PORT"
   fi
 
+  echo "What is the local path to mysql?"
+
+  read MYSQL_EXE
+
+  echo "What is the local path to mysqldump?"
+
+  read MYSQLDUMP_EXE
+
   echo "Using BASE_URL of $BASE_URL."
   echo ""
 
@@ -59,6 +67,10 @@ function make_project_env_file {
   echo "BASE_URL=$BASE_URL" >> $FILENAME
   echo "" >> $FILENAME
   echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> $FILENAME
+  echo "" >> $FILENAME
+  echo "MYSQL_EXE=$MYSQL_EXE" >> $FILENAME
+  echo "MYSQLDUMP_EXE=$MYSQLDUMP_EXE" >> $FILENAME
+  echo "" >> $FILENAME
 }
 
 function make_local_env_file {
