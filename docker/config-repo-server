@@ -44,10 +44,14 @@ else
       git remote set-url --add --push origin "$ORIGIN_REPO" # Re-add this
 
       if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_DEV" remote..."
+
         git remote set-url --add --push origin "$DEPLOYMENT_REPO_DEV"
       fi
 
       if [ -n "$DEPLOYMENT_REPO_PROD" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_PROD" remote..."
+
         git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD"
       fi
 
