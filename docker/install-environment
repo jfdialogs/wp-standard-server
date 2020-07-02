@@ -105,11 +105,11 @@ function make_local_env_file {
   read MYSQL_PASSWORD
 
   if [ -n "$DEPLOYMENT_REPO_PROD" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD:/deploy-repo"
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD:/deploy-relay"
   fi
 
   if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD:/deploy-repo"
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD:/deploy-relay"
   fi
 
   echo ""
