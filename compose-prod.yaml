@@ -16,6 +16,7 @@ services:
       WORDPRESS_DB_PASSWORD: "${PROD_DB_PASSWORD}"
     volumes:
       - ./web:/var/www/html
+      - ./docker:/docker
       - "/mnt/${PROJECT_VOLUME}/uploads:/var/www/html/wp-content/uploads"
       - "/mnt/${PROJECT_VOLUME}/conf/apache:/etc/apache"
       - "/mnt/${PROJECT_VOLUME}/conf/letsencrypt:/etc/letsencrypt"
