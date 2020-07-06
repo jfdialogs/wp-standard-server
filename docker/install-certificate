@@ -13,6 +13,7 @@ elif [ ! -f "/.dockerenv" ]; then
   echo "following command to access the container cli:"
   echo ""
   echo "    $ /deploy-repo/server use-app"
+  echo ""
 else
   echo ""
   echo " ### Using container shell"
