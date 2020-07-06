@@ -13,21 +13,24 @@ elif [ ! -f "/.dockerenv" ]; then
   echo "following command to access the container cli:"
   echo ""
   echo "    $ /deploy-repo/server use-app"
+else
   echo ""
-  echo "    ### Using container shell"
+  echo " ### Using container shell"
+  echo ""
   echo "    $ WEB_HOSTNAME=[current-project-hostname]"
   echo "    $ APP_ENV=prod"
   echo "    $ export WEB_HOSTNAME"
   echo "    $ export APP_ENV"
   echo "    $ /docker/install-certificate"
   echo ""
-  echo "    # Answering questions:"
-  echo "      1. Enter email address: support@dialogs.com"
-  echo "      2. Terms of service (A)gree/(C)ancel: a"
-  echo "      3. Share email (Y)es/(N): n"
-  echo "      4. HTTPS force redirect (1/2): 1 (no)"
+  echo " ### Answering questions:"
   echo ""
-else
+  echo "    1. Enter email address: support@dialogs.com"
+  echo "    2. Terms of service (A)gree/(C)ancel: a"
+  echo "    3. Share email (Y)es/(N): n"
+  echo "    4. HTTPS force redirect (1 no/2 yes): 1"
+  echo ""
+
   certbot --apache -d "$WEB_HOSTNAME"
 
   service apache2 restart
