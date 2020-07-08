@@ -95,6 +95,8 @@ else
 
         rm "$PROJECT_DIR/compose-install.yaml"
 
+        cd "$PROJECT_DIR"
+
         echo "Start prod server with './server start-prod'."
         echo ""
       fi
