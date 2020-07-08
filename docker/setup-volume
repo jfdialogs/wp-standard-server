@@ -16,6 +16,7 @@ else
     CONF_DIR="$MOUNT/conf"
     APACHE_DIR="$CONF_DIR/apache"
     LETSENCRYPT_DIR="$CONF_DIR/letsencrypt"
+    LETSENCRYPT_DIR="$CONF_DIR/redis"
 
     if [ ! -d "$LOGS_DIR" ]; then
       echo "Making $LOGS_DIR..."
@@ -60,6 +61,15 @@ else
       mkdir "$LETSENCRYPT_DIR"
       chown www-data "$LETSENCRYPT_DIR"
       chgrp www-data "$LETSENCRYPT_DIR"
+    fi
+
+    if [ ! -d "$REDIS_DIR" ]; then
+      echo "Making $REDIS_DIR..."
+      echo ""
+
+      mkdir "$REDIS_DIR"
+      chown www-data "$REDIS_DIR"
+      chgrp www-data "$REDIS_DIR"
     fi
 
     echo "Volumne setup complete."

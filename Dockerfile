@@ -1,8 +1,7 @@
 FROM wordpress:php7.3
 
 RUN apt-get update &&\
-    apt-get --assume-yes install dnsutils &&\
-    apt-get --assume-yes install software-properties-common &&\
+    apt-get --assume-yes install dnsutils zip unzip software-properties-common &&\
     add-apt-repository ppa:certbot/certbot &&\
     apt-get --assume-yes install python-certbot-apache &&\
     rm -rf /var/lib/apt/lists/* &&\
