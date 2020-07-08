@@ -109,7 +109,7 @@ function make_local_env_file {
   fi
 
   if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD:/deploy-relay"
+    DEPLOYMENT_REPO_DEV="$DEPLOYMENT_REPO_DEV:/deploy-relay"
   fi
 
   echo ""
