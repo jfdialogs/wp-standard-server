@@ -68,6 +68,33 @@ else
 
         cd "$PROJECT_DIR"
 
+        source "$PROJECT_DIR/.env"
+        source "$PROJECT_DIR/.env.prod"
+
+        export PROD_DB_HOST
+        export PROD_DB_PORT
+        export PROD_DB_NAME
+        export PROD_DB_USER
+        export PROD_DB_PASSWORD
+
+        cp "$PROJECT_DIR/compose-prod.yaml" "$PROJECT_DIR/compose-install.yaml"
+
+        sed -i -e 's/\/etc\/apache2/\/etc\/apache-temp/g' "$PROJECT_DIR/compose-install.yaml"
+        sed -i -e 's/\/etc\/letsencrypt/\/etc\/letsencrypt-temp/g' "$PROJECT_DIR/compose-install.yaml"
+
+        docker-compose -f "$PROJECT_DIR/compose-install.yaml" up -d --remove-orphans
+
+        docker-compose -f "$PROJECT_DIR/compose-install.yaml" exec app cp -r /etc/apache2/. /etc/apache-temp/
+        docker-compose -f "$PROJECT_DIR/compose-install.yaml" exec app cp -r /etc/letsencrypt/. /etc/letsencrypt-temp/
+
+        docker-compose -f "$PROJECT_DIR/compose-install.yaml" stop
+        docker-compose -f "$PROJECT_DIR/compose-install.yaml" down
+
+        ls -lah "/mnt/$PROJECT_VOLUME/conf/apache"
+        ls -lah "/mnt/$PROJECT_VOLUME/conf/letsencrypt"
+
+        rm "$PROJECT_DIR/compose-install.yaml"
+
         echo "Start prod server with './server start-prod'."
         echo ""
       fi
