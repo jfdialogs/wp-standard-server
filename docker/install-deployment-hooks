@@ -43,7 +43,7 @@ else
     echo "Removed."
   fi
 
-  echo "Making synlink for automated deployment..."
+  echo "Making symlink for automated deployment..."
 
   ln -s "$DOCKER_DIR/.githooks/post-receive" "$POST_RECEIVE_FILENAME"
 
