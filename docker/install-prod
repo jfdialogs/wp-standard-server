@@ -3,6 +3,8 @@
 if [ "root" != "$(whoami)" ]; then
   echo "Installation script must be run as root."
 else
+  APP_ENV=prod
+
   PROJECT_DIR="/deploy-repo"
   RELAY_DIR="/deploy-relay"
   DOCKER_DIR="$PROJECT_DIR/docker"
@@ -10,6 +12,7 @@ else
   DEPLOY_ENV=prod
   SITE_USER=dmag
 
+  export APP_ENV
   export PROJECT_DIR
   export RELAY_DIR
   export DOCKER_DIR
