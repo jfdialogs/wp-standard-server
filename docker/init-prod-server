@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+function rando {
+  echo "$(head -c1m /dev/urandom | sha1sum | cut -d' ' -f1)"
+}
+
 function make_project_env_file() {
   FILENAME="$PROJECT_DIR/.env"
 
@@ -103,6 +107,15 @@ function make_prod_env_file() {
   echo "PROD_DB_NAME=$PROD_DB_NAME" >>$FILENAME
   echo "PROD_DB_USER=$PROD_DB_USER" >>$FILENAME
   echo "PROD_DB_PASSWORD=$PROD_DB_PASSWORD" >>$FILENAME
+  echo "" >> "$FILENAME"
+  echo "WORDPRESS_AUTH_KEY=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_SECURE_AUTH_KEY=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_LOGGED_IN_KEY=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_NONCE_KEY=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_AUTH_SALT=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_SECURE_AUTH_SALT=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_LOGGED_IN_SALT=$(rando)" >> "$FILENAME"
+	echo "WORDPRESS_NONCE_SALT=$(rando)" >> "$FILENAME"
 }
 
 function make_project_directories() {

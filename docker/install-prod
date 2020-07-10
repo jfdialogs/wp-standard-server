@@ -50,10 +50,10 @@ else
       chgrp -R "$SITE_USER" "$PROJECT_DIR"
       chgrp -R "$SITE_USER" "$RELAY_DIR"
 
-      echo "Git cloing $GIT_REPO into $PROJECT_DIR as $SITE_USER"
+      echo "Git cloning $GIT_REPO into $PROJECT_DIR as $SITE_USER"
       echo ""
 
-      su -c "git clone $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
+      su -c "git clone -b PROD $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
       echo ""
 
