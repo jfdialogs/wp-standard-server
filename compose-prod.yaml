@@ -9,11 +9,15 @@ services:
     ports:
       - 80:80
       - 443:443
+    env_file:
+      - .env
+      - .env.prod
     environment:
       WORDPRESS_DB_HOST: "${PROD_DB_HOST}:${PROD_DB_PORT}"
       WORDPRESS_DB_NAME: "${PROD_DB_NAME}"
       WORDPRESS_DB_USER: "${PROD_DB_USER}"
       WORDPRESS_DB_PASSWORD: "${PROD_DB_PASSWORD}"
+      WORDPRESS_CONFIG_EXTRA: "file_exists(ABSPATH . 'wp-content/env.php') && require_once ABSPATH . 'wp-content/env.php';"
     volumes:
       - ./web:/var/www/html
       - ./docker:/docker

@@ -11,6 +11,8 @@ services:
     env_file:
       - .env
       - .env.local
+    environment:
+      WORDPRESS_CONFIG_EXTRA: "file_exists(ABSPATH . 'wp-content/env.php') && require_once ABSPATH . 'wp-content/env.php';"
     volumes:
       - ./docker:/docker:cached
       - ./web:/var/www/html:cached
