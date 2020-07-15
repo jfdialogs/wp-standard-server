@@ -11,7 +11,7 @@ else
 
   read DEPLOY_ENV
 
-  if [ -z "$DEPLOY_ENV" ] || ; then
+  if [ -z "$DEPLOY_ENV" ]; then
     echo "DEPLOY_ENV is required."
     echo ""
 
