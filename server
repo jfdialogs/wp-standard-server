@@ -13,11 +13,15 @@ function has_command {
     echo true
   fi
 
-  if [ "prod" != "$APP_ENV" ] && [ -n "$(printf '%s\n' "${DEV_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
+  if [ "local" == "$DEPLOY_ENV" ] && [ -n "$(printf '%s\n' "${LOCAL_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
     echo true
   fi
 
-  if [ "prod" == "$APP_ENV" ] && [ -n "$(printf '%s\n' "${PROD_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
+  if [ "dev" == "$DEPLOY_ENV" ] && [ -n "$(printf '%s\n' "${DEV_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
+    echo true
+  fi
+
+  if [ "prod" == "$DEPLOY_ENV" ] && [ -n "$(printf '%s\n' "${PROD_COMMANDS[@]}" | grep -e "^$COMMAND$")" ]; then
     echo true
   fi
 }
@@ -40,8 +44,10 @@ fi
 export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
-export COMMANDS=(help status tail)
-export DEV_COMMANDS=(start restart open-site open-admin stop use-app use-data use-cache use-client status tail container-logs setup install uninstall config-repo)
+
+export COMMANDS=(help status tail build restart start-cache dump-prod)
+export LOCAL_COMMANDS=(start open-site open-admin stop use-app use-data use-cache use-client status tail container-logs setup install uninstall config-repo copy-prod-to-dev)
+export DEV_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs deploy init-prod own-project setup-volume)
 export PROD_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs deploy init-prod own-project setup-volume)
 
 COMMAND=$1
@@ -61,6 +67,10 @@ if [ -n "$(has_command $COMMAND)" ]; then
 
     COMMAND_SCRIPT="$DOCKER_DIR/$COMMAND-server"
 
+    if [ -s "$DOCKER_DIR/scripts/$COMMAND" ]; then
+      COMMAND_SCRIPT="$DOCKER_DIR/scripts/$COMMAND"
+    fi
+
     if [ -f "$COMMAND_SCRIPT" ]; then
       source "$COMMAND_SCRIPT"
     else
@@ -69,6 +79,7 @@ if [ -n "$(has_command $COMMAND)" ]; then
   else
     echo "APP MODE"
     echo "ALL    { ${COMMANDS[@]}"
+    echo "LOCAL  { ${LOCAL_COMMANDS[@]}"
     echo "DEV    { ${DEV_COMMANDS[@]}"
     echo "PROD   { ${PROD_COMMANDS[@]}"
   fi
