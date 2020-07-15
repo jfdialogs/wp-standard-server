@@ -7,7 +7,7 @@
 if [ -z "$WEB_HOSTNAME" ] || [ -z "$APP_ENV" ]; then
   echo "WEB_HOSTNAME and APP_ENV are required."
 elif [ "$APP_ENV" != "prod" ] && [ "$APP_ENV" != "dev" ]; then
-  echo "Certicates may only be installed into a remote prod or dev environment."
+  echo "Certificates may only be installed into a remote prod or dev environment."
 elif [ ! -f "/.dockerenv" ]; then
   echo "Run the Install Certificate server command within a container. Use the"
   echo "following command to access the container cli:"
