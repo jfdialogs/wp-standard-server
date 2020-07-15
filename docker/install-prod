@@ -7,8 +7,10 @@ else
   RELAY_DIR="/deploy-relay"
   DOCKER_DIR="$PROJECT_DIR/docker"
 
+  APP_ENV=prod
+
   echo ""
-  echo "What is the remote deployment environment targeted (dev or prod)?"
+  echo "What is the remote deployment environment (dev or prod)?"
 
   read DEPLOY_ENV
 
@@ -72,7 +74,7 @@ else
       chgrp -R "$SITE_USER" "$PROJECT_DIR"
       chgrp -R "$SITE_USER" "$RELAY_DIR"
 
-      echo "Git cloing $GIT_REPO branch $DEPLOY_BRANCH into $PROJECT_DIR as $SITE_USER"
+      echo "Git cloing $GIT_REPO  branch $DEPLOY_BRANCH into $PROJECT_DIR as $SITE_USER"
       echo ""
 
       su -c "git clone -b $DEPLOY_BRANCH $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
@@ -84,7 +86,7 @@ else
         echo ""
       else
         "$PROJECT_DIR/server" init-prod && echo ""
-        "$PROJECT_DIR/install-deployment-hooks" && echo ""
+        "$DOCKER_DIR/install-deployment-hooks" && echo ""
         "$PROJECT_DIR/server" own-project && echo ""
         "$PROJECT_DIR/server" setup-volume && echo ""
 
