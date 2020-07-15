@@ -7,9 +7,12 @@ else
   RELAY_DIR="/deploy-relay"
   DOCKER_DIR="$PROJECT_DIR/docker"
 
+  echo ""
   echo "What is the remote deployment environment targeted (dev or prod)?"
 
   read DEPLOY_ENV
+
+  echo ""
 
   if [ -z "$DEPLOY_ENV" ]; then
     echo "DEPLOY_ENV is required."
