@@ -83,10 +83,10 @@ else
         echo "Git repo $GIT_REPO not found or install error."
         echo ""
       else
-        "$DOCKER_DIR/init-prod-server" && echo ""
-        "$DOCKER_DIR/install-deployment-hooks" && echo ""
-        "$DOCKER_DIR/own-project" && echo ""
-        "$DOCKER_DIR/setup-volume" && echo ""
+        "$PROJECT_DIR/server" init-prod && echo ""
+        "$PROJECT_DIR/install-deployment-hooks" && echo ""
+        "$PROJECT_DIR/server" own-project && echo ""
+        "$PROJECT_DIR/server" setup-volume && echo ""
 
         cd "$PROJECT_DIR"
 
