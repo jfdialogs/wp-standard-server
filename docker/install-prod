@@ -3,16 +3,32 @@
 if [ "root" != "$(whoami)" ]; then
   echo "Installation script must be run as root."
 else
-  APP_ENV=prod
-
   PROJECT_DIR="/deploy-repo"
   RELAY_DIR="/deploy-relay"
   DOCKER_DIR="$PROJECT_DIR/docker"
 
-  DEPLOY_ENV=prod
+  echo "What is the remote deployment environment targeted (dev or prod)?"
+
+  read DEPLOY_ENV
+
+  if [ -z "$DEPLOY_ENV" ] || ; then
+    echo "DEPLOY_ENV is required."
+    echo ""
+
+    exit
+  elif [ "$DEPLOY_ENV" != "prod" ] && [ "$DEPLOY_ENV" != "dev" ]; then
+    echo "DEPLOY_ENV is required to be dev or prod."
+    echo ""
+
+    exit
+  elif [ "$DEPLOY_ENV" == "dev" ]; then
+    DEPLOY_BRANCH=master
+  elif [ "$DEPLOY_ENV" == "prod" ]; then
+    DEPLOY_BRANCH=PROD
+  fi
+
   SITE_USER=dmag
 
-  export APP_ENV
   export PROJECT_DIR
   export RELAY_DIR
   export DOCKER_DIR
@@ -53,10 +69,10 @@ else
       chgrp -R "$SITE_USER" "$PROJECT_DIR"
       chgrp -R "$SITE_USER" "$RELAY_DIR"
 
-      echo "Git cloning PROD $GIT_REPO into $PROJECT_DIR as $SITE_USER"
+      echo "Git cloing $GIT_REPO into $PROJECT_DIR as $SITE_USER"
       echo ""
 
-      su -c "git clone -b PROD $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
+      su -c "git clone -b $DEPLOY_BRANCH $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
       echo ""
 
@@ -64,10 +80,10 @@ else
         echo "Git repo $GIT_REPO not found or install error."
         echo ""
       else
-        "$PROJECT_DIR/server" init-prod && echo ""
+        "$DOCKER_DIR/init-prod-server" && echo ""
         "$DOCKER_DIR/install-deployment-hooks" && echo ""
-        "$PROJECT_DIR/server" own-project && echo ""
-        "$PROJECT_DIR/server" setup-volume && echo ""
+        "$DOCKER_DIR/own-project" && echo ""
+        "$DOCKER_DIR/setup-volume" && echo ""
 
         cd "$PROJECT_DIR"
 
@@ -89,6 +105,8 @@ else
 
         docker-compose -f "$PROJECT_DIR/compose-install.yaml" exec app cp -r /etc/apache2/. /etc/apache-temp/
         docker-compose -f "$PROJECT_DIR/compose-install.yaml" exec app cp -r /etc/letsencrypt/. /etc/letsencrypt-temp/
+
+        sed -i -e 's/<VirtualHost \*:80>/<VirtualHost \*:8080>/' "/mnt/$PROJECT_VOLUME/conf/apache/sites-enabled/000-default.conf"
 
         docker-compose -f "$PROJECT_DIR/compose-install.yaml" stop
         docker-compose -f "$PROJECT_DIR/compose-install.yaml" down
