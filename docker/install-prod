@@ -123,7 +123,6 @@ else
 
         rm "$PROJECT_DIR/compose-install.yaml"
 
-        echo ""
         echo "Copying $CACHE_DIR/default.vcl..."
         echo ""
 
@@ -134,7 +133,6 @@ else
           uuidgen > "$DOCKER_DIR/etc/varnish/secret"
         fi
 
-        echo ""
         echo "Symlinking $PROJECT_DIR to /app..."
         echo ""
 
