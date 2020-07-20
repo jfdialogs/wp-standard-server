@@ -86,7 +86,7 @@ else
         echo ""
       else
         "$PROJECT_DIR/server" init-prod && echo ""
-        "$DOCKER_DIR/install-deployment-hooks" && echo ""
+        "$DOCKER_DIR/scripts/install-hooks" && echo ""
         "$PROJECT_DIR/server" own-project && echo ""
         "$PROJECT_DIR/server" setup-volume && echo ""
 
@@ -100,6 +100,8 @@ else
         export PROD_DB_NAME
         export PROD_DB_USER
         export PROD_DB_PASSWORD
+
+        CACHE_DIR="/mnt/$PROJECT_VOLUME/conf/varnish"
 
         cp "$PROJECT_DIR/compose-prod.yaml" "$PROJECT_DIR/compose-install.yaml"
 
@@ -122,7 +124,28 @@ else
         rm "$PROJECT_DIR/compose-install.yaml"
 
         echo ""
-        echo "Start prod server with './server start-prod'."
+        echo "Copying $CACHE_DIR/default.vcl..."
+        echo ""
+
+        cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
+        chgrp www-data  "$CACHE_DIR/default.vcl"
+
+        if [ ! -s "$DOCKER_DIR/etc/varnish/secret" ]; then
+          uuidgen > "$DOCKER_DIR/etc/varnish/secret"
+        fi
+
+        echo ""
+        echo "Symlinking $PROJECT_DIR to /app..."
+        echo ""
+
+        ln -s "$PROJECT_DIR" /app
+        chown www-data /app
+        chgrp www-data /app
+
+        cd /app
+
+        echo ""
+        echo "Start prod server with '/app/server start-prod'."
         echo ""
       fi
 

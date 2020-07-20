@@ -35,10 +35,15 @@ else
   else
     echo "Server started in background. Waiting for availability (may take longer on first run)..."
     echo ""
+    echo "Opening $BASE_URL, waiting for server..."
+    echo ""
 
-    sleep 5
+    until $(curl --output /dev/null --silent --head --fail "$BASE_URL"); do
+      printf '.'
+      sleep 3
+    done
 
-    echo "Opening $BASE_URL..."
+    echo ""
 
     open "$BASE_URL"
   fi
