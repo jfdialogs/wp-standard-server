@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+function dump_filename {
+  PREAMBLE=$1
+  TABLE_NAME=$2
+  EXPORTED_AT=$3
+
+  PATH_TO_EXPORTS="$DOCKER_DIR/data/export/$EXPORTED_AT"
+
+  if [ ! -d "$PATH_TO_EXPORTS" ]; then
+    mkdir "$PATH_TO_EXPORTS"
+  fi
+
+  echo "$PATH_TO_EXPORTS/$PREAMBLE-$PROD_DB_NAME-$TABLE-$EXPORTED_AT.sql"
+}
+
+function show_tables {
+  PROD_CNF="$(cnf_file prod $PROD_DB_USER $PROD_DB_PASSWORD)"
+
+  "$MYSQL_EXE" --defaults-extra-file="$PROD_CNF" -h "$PROD_DB_HOST" -P "$PROD_DB_PORT" -N -B "$PROD_DB_NAME" -e "SHOW TABLES;"
+
+  rm "$PROD_CNF"
+}
+
+function export_table {
+  TABLE=$1
+  FILENAME=$2
+
+  PROD_CNF="$(cnf_file prod $PROD_DB_USER $PROD_DB_PASSWORD)"
+
+  "$MYSQLDUMP_EXE" --defaults-extra-file="$PROD_CNF" --host="$PROD_DB_HOST" --port="$PROD_DB_PORT" --column-statistics=0 --set-gtid-purged=OFF --quick --compress "$PROD_DB_NAME" "$TABLE" > "$FILENAME"
+
+  rm "$PROD_CNF"
+}
+
+function cnf_file {
+  ENV=$1
+  FILENAME="$DOCKER_DIR/data/mysql/$ENV-credentials.cnf"
+  DB_USER=$2
+  DB_PASSWORD=$3
+
+  echo "[client]" > $FILENAME
+  echo "user=$DB_USER" >> $FILENAME
+  echo "password=$DB_PASSWORD" >> $FILENAME
+
+  echo $FILENAME
+}
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+elif [ -z "$DEPLOY_ENV" ] || [ "$DEPLOY_ENV" != local ]; then
+  echo "Copying remote PROD server data to remote DEV database only allowed in local env."
+else
+  echo "This command will dump the ${PROJECT_KEY}-prod database."
+  echo ""
+
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.local"
+  source "$PROJECT_DIR/.env.prod"
+
+  CURRENT_DATETIME="$(date '+%Y%m%d%H%M%S')"
+
+  DB_TABLES=($(show_tables))
+
+  COUNTER=1
+  NUM_TABLES="${#DB_TABLES[*]}"
+
+  echo "Number of tables to dump: $NUM_TABLES"
+  echo "${DB_TABLES[*]}"
+  echo ""
+
+  for TABLE in ${DB_TABLES[@]};
+  do
+    DUMP_FILE=$(dump_filename "${PROJECT_KEY}-prod" "$TABLE" "$CURRENT_DATETIME")
+
+    echo "$COUNTER. Exporting $TABLE to file:///$DUMP_FILE ..."
+
+    export_table "$TABLE" "$DUMP_FILE"
+
+    COUNTER=$[COUNTER +1]
+  done
+
+  echo ""
+  echo "${PROJECT_KEY} prod database dump done."
+  echo ""
+fi

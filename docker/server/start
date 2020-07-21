@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
+  echo "PROJECT_DIR and DEPLOY_ENV are required."
+else
+  if [ "$DEPLOY_ENV" == "local" ]; then
+    time "$PROJECT_DIR/server" start-local
+  else
+    time "$PROJECT_DIR/server" start-prod
+  fi
+fi

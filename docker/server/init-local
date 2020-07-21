@@ -1,0 +1,329 @@
+#!/usr/bin/env bash
+
+function backup_env {
+  ENV_NAME="$1"
+
+  FILENAME="$PROJECT_DIR/.env"
+
+  if [ -n "$ENV_NAME" ]; then
+    FILENAME="$PROJECT_DIR/.env.$ENV_NAME"
+  fi
+
+  if [ -s "$FILENAME" ]; then
+    mv "$PROJECT_DIR/$FILENAME" "$PROJECT_DIR/$FILENAME-$(date '+%Y%m%d%H%M%S')"
+  fi
+}
+
+function setup_local_host {
+  HOSTNAME="$1"
+
+  HOSTS_FILE="/etc/hosts"
+
+  if ! grep -q "HOSTNAME" "$HOSTS_FILE"; then
+    echo "Adding local host entry for $HOSTNAME..."
+
+    echo "127.0.0.1       $HOSTNAME" | sudo tee -a "$HOSTS_FILE"
+
+    echo ""
+  fi
+}
+
+function make_project_env_file {
+  FILENAME="$PROJECT_DIR/.env"
+
+  echo "Generate Project Environment Variables"
+  echo "====="
+  echo ""
+
+  echo "What is the project name (alphanumeric, dashes and periods only)?"
+
+  read PROJECT_KEY
+
+  echo "What is the project site username (e.g., named site user)?"
+
+  read SITE_USER
+
+  echo "What is the current application environment (dev, test, prod)?"
+
+  read APP_ENV
+
+  echo "What is the current deployment environment (local, dev, prod)?"
+
+  read DEPLOY_ENV
+
+  echo "What is the web protocol of the current environment (http or https)?"
+
+  read WEB_PROTOCOL
+
+  echo "What is the web port to use (generally ~9000)?"
+
+  read WEB_PORT
+
+  echo "What is the remote production hostname?"
+
+  read PROD_HOSTNAME
+
+  echo "What is the remote development hostname?"
+
+  read DEV_HOSTNAME
+
+  WEB_HOSTNAME="$(echo "$PROD_HOSTNAME" | sed s/.com$/.local/)"
+
+  echo ""
+
+  BASE_URL="$WEB_PROTOCOL://$WEB_HOSTNAME"
+
+  if [ "$WEB_PORT" != "80" ] && [ "$WEB_PORT" != "8080" ]; then
+    BASE_URL="$BASE_URL:$WEB_PORT"
+  fi
+
+  echo "What is the local path to mysql?"
+
+  read MYSQL_EXE
+
+  echo "What is the local path to mysqldump?"
+
+  read MYSQLDUMP_EXE
+
+  echo ""
+
+  echo "Using BASE_URL of $BASE_URL."
+  echo ""
+
+  echo "Writing $FILENAME..."
+
+  backup_env
+
+  echo ""
+
+  setup_local_host "$WEB_HOSTNAME"
+
+  echo "PROJECT_KEY=$PROJECT_KEY" > "$FILENAME"
+  echo "APP_ENV=PROD" >> "$FILENAME"
+  echo "DEPLOY_ENV=$DEPLOY_ENV" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> "$FILENAME"
+  echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> "$FILENAME"
+  echo "WEB_PORT=$WEB_PORT" >> "$FILENAME"
+  echo "BASE_URL=$BASE_URL" >> "$FILENAME"
+  echo "DEV_HOSTNAME=$DEV_HOSTNAME" >> "$FILENAME"
+  echo "DEV_BASE_URL=http://$DEV_HOSTNAME" >> "$FILENAME"
+  echo "PROD_HOSTNAME=$PROD_HOSTNAME" >> "$FILENAME"
+  echo "DEV_BASE_URL=http://$PROD_HOSTNAME" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "MYSQL_EXE=$MYSQL_EXE" >> "$FILENAME"
+  echo "MYSQLDUMP_EXE=$MYSQLDUMP_EXE" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+}
+
+function make_local_env_file {
+  FILENAME="$PROJECT_DIR/.env.local"
+
+  echo "Generate Local Environment Variables"
+  echo "====="
+  echo ""
+
+  echo "What is the project's remote repository url (git@...)?"
+
+  read ORIGIN_REPO
+
+  echo "Enable HTTP acceleration (y/n)?"
+
+  read HTTP_ACCELERATION
+
+  echo "What is the project's DEV remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_DEV
+
+  echo "What is the project's PROD 01 remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_PROD_01
+
+  echo "What is the project's PROD 02 remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_PROD_02
+
+  echo "What is the project's PROD 03 remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_PROD_03
+
+  echo "What is the project's PROD 04 remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_PROD_04
+
+  echo "What is the project's PROD 05 remote deployment url (root@[IP or domain])?"
+
+  read DEPLOYMENT_REPO_PROD_05
+
+  echo "What is the local database name (alphanumeric and underscores)?"
+
+  read MYSQL_DATABASE
+
+  echo "What is the local database user?"
+
+  read MYSQL_USER
+
+  echo "What is the local database user password?"
+
+  read MYSQL_PASSWORD
+
+  echo "What is the AWS S3 bucket for local dev?"
+
+  read AS3CF_BUCKET
+
+  echo "What is the A@S Access Key ID for local dev?"
+
+  read AS3CF_AWS_ACCESS_KEY_ID
+
+  echo "What is the AWS Secret Access Key for local dev?"
+
+  read AS3CF_AWS_SECRET_ACCESS_KEY
+
+  if [[ "$HTTP_ACCELERATION" =~ ^[Yy]$ ]]; then
+    HTTP_ACCELERATION=yes
+  else
+    HTTP_ACCELERATION=no
+  fi
+
+  if [ -n "$DEPLOYMENT_REPO_DEV" ]; then
+    DEPLOYMENT_REPO_DEV="$DEPLOYMENT_REPO_DEV:/deploy-relay"
+  fi
+
+  if [ -n "$DEPLOYMENT_REPO_PROD_01" ]; then
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_01:/deploy-relay"
+  fi
+
+  if [ -n "$DEPLOYMENT_REPO_PROD_02" ]; then
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_02:/deploy-relay"
+  fi
+
+  if [ -n "$DEPLOYMENT_REPO_PROD_03" ]; then
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_03:/deploy-relay"
+  fi
+
+  if [ -n "$DEPLOYMENT_REPO_PROD_04" ]; then
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_04:/deploy-relay"
+  fi
+
+  if [ -n "$DEPLOYMENT_REPO_PROD_05" ]; then
+    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_05:/deploy-relay"
+  fi
+
+  echo ""
+
+  echo "Writing $FILENAME..."
+
+  backup_env local
+
+  echo "# This part is needed for MySQL to create the user successfully on first touch." > "$FILENAME"
+  echo "MYSQL_HOST=$PROJECT_KEY-data" >> "$FILENAME"
+  echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> "$FILENAME"
+  echo "MYSQL_USER=$MYSQL_USER" >> "$FILENAME"
+  echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "# These are the actual settings for the Wordpress docker installation." >> "$FILENAME"
+  echo "WORDPRESS_DB_HOST=$PROJECT_KEY-data" >> "$FILENAME"
+  echo "WORDPRESS_DB_NAME=$MYSQL_DATABASE" >> "$FILENAME"
+  echo "WORDPRESS_DB_USER=$MYSQL_USER" >> "$FILENAME"
+  echo "WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "WORDPRESS_DEBUG=true" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "HTTP_ACCELERATION=$HTTP_ACCELERATION" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "ORIGIN_REPO=$ORIGIN_REPO" >> "$FILENAME"
+  echo "DEPLOYMENT_REPO_DEV=$DEPLOYMENT_REPO_DEV" >> "$FILENAME"
+  echo "DEPLOYMENT_REPO_PROD_01=$DEPLOYMENT_REPO_PROD_01" >> "$FILENAME"
+  echo "DEPLOYMENT_REPO_PROD_02=$DEPLOYMENT_REPO_PROD_02" >> "$FILENAME"
+  echo "DEPLOYMENT_REPO_PROD_03=$DEPLOYMENT_REPO_PROD_03" >> "$FILENAME"
+  echo "DEPLOYMENT_REPO_PROD_04=$DEPLOYMENT_REPO_PROD_04" >> "$FILENAME"
+  echo "DEPLOYMENT_REPO_PROD_05=$DEPLOYMENT_REPO_PROD_05" >> "$FILENAME"
+  echo ""
+  echo "REDIS_URL=redis://cache:6379" >> "$FILENAME"
+  echo ""
+  echo "AS3CF_BUCKET=$AS3CF_BUCKET" >> "$FILENAME"
+  echo "AS3CF_AWS_ACCESS_KEY_ID=$AS3CF_AWS_ACCESS_KEY_ID" >> "$FILENAME"
+  echo "AS3CF_AWS_SECRET_ACCESS_KEY=$AS3CF_AWS_SECRET_ACCESS_KEY" >> "$FILENAME"
+}
+
+function make_prod_env_file {
+  FILENAME="$PROJECT_DIR/.env.prod"
+
+  echo "Generate Production Environment Variables"
+  echo "====="
+  echo ""
+
+  echo "What is the production database host?"
+
+  read PROD_DB_HOST
+
+  echo "What is the production database port?"
+
+  read PROD_DB_PORT
+
+  echo "What is the production database name (alphanumeric and underscores)?"
+
+  read PROD_DB_NAME
+
+  echo "What is the production database user?"
+
+  read PROD_DB_USER
+
+  echo "What is the production database user password?"
+
+  read PROD_DB_PASSWORD
+
+  echo ""
+
+  echo "Writing $FILENAME..."
+
+  backup_env prod
+
+  echo "PROD_DB_HOST=$PROD_DB_HOST" > "$FILENAME"
+  echo "PROD_DB_PORT=$PROD_DB_PORT" >> "$FILENAME"
+  echo "PROD_DB_NAME=$PROD_DB_NAME" >> "$FILENAME"
+  echo "PROD_DB_USER=$PROD_DB_USER" >> "$FILENAME"
+  echo "PROD_DB_PASSWORD=$PROD_DB_PASSWORD" >> "$FILENAME"
+}
+
+function make_project_directories {
+  WP_CONTENT="$PROJECT_DIR/wp-content"
+  WP_CONTENT_PLUGINS="$WP_CONTENT/plugins"
+  WP_CONTENT_THEMES="$WP_CONTENT/themes"
+
+  if [ ! -d "$WP_CONTENT" ]; then
+    mkdir "$WP_CONTENT"
+  fi
+
+  if [ ! -d "$WP_CONTENT_PLUGINS" ]; then
+    mkdir "$WP_CONTENT_PLUGINS"
+  fi
+
+  if [ ! -d "$WP_CONTENT_THEMES" ]; then
+    mkdir "$WP_CONTENT_THEMES"
+  fi
+}
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  make_project_env_file
+
+  source "$PROJECT_DIR/.env" && echo ""
+
+  make_local_env_file
+
+  source "$PROJECT_DIR/.env.local" && echo ""
+
+  make_prod_env_file
+
+  source "$PROJECT_DIR/.env.prod" && echo ""
+
+  touch "$DOCKER_DIR/.installed"
+
+  echo $(date '+%Y-%m-%d %H:%M:%S') >> "$DOCKER_DIR/.installed"
+
+  echo "Done."
+fi

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-if [ -z "$PROJECT_DIR" ]; then
-  echo "PROJECT_DIR is required."
-else
-  source "$PROJECT_DIR/docker/install-environment"
-fi

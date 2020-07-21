@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
+  echo "PROJECT_DIR and DEPLOY_ENV are required."
+else
+  if [ "$DEPLOY_ENV" == local ]; then
+    echo "Deployment hooks can only be added in non-local remote environments."
+  else
+    "$PROJECT_DIR/server" install-hooks
+  fi
+fi

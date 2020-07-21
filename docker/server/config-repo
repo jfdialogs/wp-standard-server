@@ -23,8 +23,12 @@ else
 
     echo ""
     echo "ORIGIN_REPO: $ORIGIN_REPO"
-    echo "DEPLOYMENT_REPO_PROD: $DEPLOYMENT_REPO_PROD"
     echo "DEPLOYMENT_REPO_DEV: $DEPLOYMENT_REPO_DEV"
+    echo "DEPLOYMENT_REPO_PROD_01: $DEPLOYMENT_REPO_PROD_01"
+    echo "DEPLOYMENT_REPO_PROD_02: $DEPLOYMENT_REPO_PROD_02"
+    echo "DEPLOYMENT_REPO_PROD_03: $DEPLOYMENT_REPO_PROD_03"
+    echo "DEPLOYMENT_REPO_PROD_04: $DEPLOYMENT_REPO_PROD_04"
+    echo "DEPLOYMENT_REPO_PROD_05: $DEPLOYMENT_REPO_PROD_05"
     echo ""
 
     echo "Removing current remotes... Continue (y/n)?"
@@ -49,10 +53,34 @@ else
         git remote set-url --add --push origin "$DEPLOYMENT_REPO_DEV"
       fi
 
-      if [ -n "$DEPLOYMENT_REPO_PROD" ]; then
-        echo "Adding "$DEPLOYMENT_REPO_PROD" remote..."
+      if [ -n "$DEPLOYMENT_REPO_PROD_01" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_PROD_01" remote..."
 
-        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD"
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD_01"
+      fi
+
+      if [ -n "$DEPLOYMENT_REPO_PROD_02" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_PROD_02" remote..."
+
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD_02"
+      fi
+
+      if [ -n "$DEPLOYMENT_REPO_PROD_03" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_PROD_03" remote..."
+
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD_03"
+      fi
+
+      if [ -n "$DEPLOYMENT_REPO_PROD_04" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_PROD_04" remote..."
+
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD_04"
+      fi
+
+      if [ -n "$DEPLOYMENT_REPO_PROD_05" ]; then
+        echo "Adding "$DEPLOYMENT_REPO_PROD_05" remote..."
+
+        git remote set-url --add --push origin "$DEPLOYMENT_REPO_PROD_0"
       fi
 
       git push --set-upstream origin master
@@ -62,9 +90,10 @@ else
       echo ""
 
       git remote -v
-    fi
 
-    echo ""
-    echo "Server repository configured for deployment."
+      echo ""
+      echo "Server repository configured for deployment."
+      echo ""
+    fi
   fi
 fi

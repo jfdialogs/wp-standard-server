@@ -11,36 +11,39 @@ else
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"
 
+  APP_ENV=prod
+
+  export APP_ENV
   export PROJECT_KEY
   export PROJECT_VOLUME
+
   export PROD_DB_HOST
   export PROD_DB_PORT
   export PROD_DB_NAME
   export PROD_DB_USER
   export PROD_DB_PASSWORD
 
-  APP_ENV=prod
-  export APP_ENV
-
   echo "Stopping any running server containers..."
+  echo ""
 
-  source "$DOCKER_DIR/stop-prod-server"
+  time "$PROJECT_DIR/server" stop-prod
 
+  echo ""
   echo "Starting server...."
   echo ""
 
-  RUN_COMMAND="docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans"
+  RUN_COMMAND="docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans;"
 
   if [ $(whoami) != "$SITE_USER" ]; then
     echo "su'ing $SITE_USER..."
     echo ""
 
-    su -c "cd $PROJECT_DIR ; source $PROJECT_DIR/.env ; docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans" -m - "$SITE_USER"
+    time su -c "cd $PROJECT_DIR ; source $PROJECT_DIR/.env ; docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans" -m - "$SITE_USER"
   else
-    echo "su'd $SITE_USER..."
+    echo "Running as $SITE_USER..."
     echo ""
 
-    eval "$RUN_COMMAND"
+    time eval "$RUN_COMMAND"
   fi
 
   echo ""

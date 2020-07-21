@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  echo "Starting local project server."
+  echo ""
+
+  if [ ! -f "$DOCKER_DIR/.installed" ]; then
+    echo "Install not detected, prompting for environment installation."
+    echo ""
+
+    "$PROJECT_DIR/server" install
+
+    echo ""
+    echo "Environment variables installed. Use ./server setup to pull PROD data into local database."
+    echo ""
+  fi
+
+  if [ -s "$PROJECT_DIR/.env" ]; then
+    source "$PROJECT_DIR/.env"
+
+    echo "Stopping any running server containers..."
+    echo ""
+
+    "$PROJECT_DIR/server" stop-local
+
+    echo ""
+    echo "Starting server...."
+    echo ""
+
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$PROJECT_DIR/.env" up -d --remove-orphans
+
+    echo ""
+
+    if [ -n "$PREVENT_WEB_OPEN" ]; then
+      echo "Site URL: $BASE_URL"
+      echo ""
+    fi
+
+    echo "Loading app and building homepage..."
+
+    echo ""
+
+    START=$SECONDS
+
+    until $(curl --output /dev/null --silent --head --fail "$BASE_URL"); do
+      printf '.'
+      sleep 1
+    done
+
+    printf " > Hompeage cached in $(($SECONDS - $START)) seconds. <"
+
+    echo ""
+
+    if [ -z "$PREVENT_WEB_OPEN" ]; then
+      open "$BASE_URL"
+    fi
+
+    echo ""
+    echo "Done. Use './server stop' to quit."
+  fi
+fi

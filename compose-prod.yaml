@@ -9,6 +9,11 @@ services:
     ports:
       - 80:80
       - 443:443
+    extra_hosts:
+      - "${WEB_HOSTNAME}:127.0.0.1"
+    ulimits:
+      nofile: 131072
+      memlock: 82000
     env_file:
       - .env
       - .env.prod
@@ -24,6 +29,7 @@ services:
       - "/mnt/${PROJECT_VOLUME}/uploads:/var/www/html/wp-content/uploads"
       - "/mnt/${PROJECT_VOLUME}/conf/apache:/etc/apache2"
       - "/mnt/${PROJECT_VOLUME}/conf/letsencrypt:/etc/letsencrypt"
+      - "/mnt/${PROJECT_VOLUME}/conf/varnish:/etc/varnish"
       - "/mnt/${PROJECT_VOLUME}/logs:/var/log"
 
 volumes:

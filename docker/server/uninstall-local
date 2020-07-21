@@ -14,7 +14,7 @@ else
     fi
   }
 
-  DATABASE_DIR="$DOCKER_DIR/data"
+  DATABASE_DIR="$DOCKER_DIR/data/mysql"
 
   echo "WARNING!!!"
   echo "This will uninstall the docker environment project variables by deleting .env files."

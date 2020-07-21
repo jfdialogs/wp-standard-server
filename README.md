@@ -44,7 +44,7 @@ export PROJECT_DIR=/var/www
 export DOCKER_DIR="$PROJECT_DIR/docker"
 
 # These are both called implicitly during './server start'.
-source "$DOCKER_DIR/install-environment"
+source "$DOCKER_DIR/install-local"
 source "$DOCKER_DIR/setup-database-server"
 ```
 

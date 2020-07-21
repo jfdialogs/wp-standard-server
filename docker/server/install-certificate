@@ -9,10 +9,13 @@ if [ -z "$WEB_HOSTNAME" ] || [ -z "$APP_ENV" ]; then
 elif [ "$APP_ENV" != "prod" ] && [ "$APP_ENV" != "dev" ]; then
   echo "Certificates may only be installed into a remote prod or dev environment."
 elif [ ! -f "/.dockerenv" ]; then
+  echo ""
+  echo "Web Hostname: $WEB_HOSTNAME"
+  echo ""
   echo "Run the Install Certificate server command within a container. Use the"
   echo "following command to access the container cli:"
   echo ""
-  echo "    $ /deploy-repo/server use-app"
+  echo "    $ /app/server use-app"
   echo ""
 else
   echo ""
@@ -22,7 +25,7 @@ else
   echo "    $ APP_ENV=prod"
   echo "    $ export WEB_HOSTNAME"
   echo "    $ export APP_ENV"
-  echo "    $ /docker/install-certificate"
+  echo "    $ /app/docker/install-certificate"
   echo ""
   echo " ### Answering questions:"
   echo ""

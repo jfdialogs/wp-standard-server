@@ -16,7 +16,6 @@ else
 
     chown -R www-data "/mnt/$PROJECT_VOLUME"
     chgrp -R www-data "/mnt/$PROJECT_VOLUME"
-    chmod -R 775 "/mnt/$PROJECT_VOLUME"
 
     echo "Done."
   fi

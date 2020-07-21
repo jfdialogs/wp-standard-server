@@ -8,8 +8,8 @@ else
 
     export PREVENT_WEB_OPEN
 
-    ./server start
+    time "$PROJECT_DIR/server" start-local
   else
-    ./server start-prod
+    time "$PROJECT_DIR/server" start-prod
   fi
 fi

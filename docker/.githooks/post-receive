@@ -2,6 +2,7 @@
 
 GIT_DIR="/deploy-relay"
 PROJECT_DIR="/deploy-repo"
+DOCKER_DIR="/deploy-repo/docker"
 
 source "$PROJECT_DIR/.env"
 source "$PROJECT_DIR/.env.prod"
@@ -13,19 +14,35 @@ do
   echo "Checking for deployment of branch $BRANCH in current environment..."
   echo ""
 
+  cd "$PROJECT_DIR"
+
+  CACHE_DIR="/mnt/$PROJECT_VOLUME/conf/varnish"
+
   if [ "master" == "$BRANCH" ] && [ "prod" != "$DEPLOY_ENV" ]; then
     echo "Push received! Deploying branch $BRANCH for deployment environment "$DEPLOY_ENV"..."
+    echo ""
 
     git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
 
-    "$PROJECT_DIR/server" start-prod
+    echo ""
+
+    cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
+    sudo chgrp www-data "$CACHE_DIR/default.vcl"
+
+    "$PROJECT_DIR/server" start
   fi
 
   if [ "PROD" == "$BRANCH" ] && [ "prod" == "$DEPLOY_ENV" ]; then
     echo "Push received! Deploying branch $BRANCH for deployment environment "$DEPLOY_ENV"..."
+    echo ""
 
     git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
 
-    "$PROJECT_DIR/server" start-prod
+    echo ""
+
+    cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
+    sudo chgrp www-data "$CACHE_DIR/default.vcl"
+
+    "$PROJECT_DIR/server" start
   fi
 done

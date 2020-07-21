@@ -26,13 +26,15 @@ function has_command {
   fi
 }
 
-if [ -n "$PROJECT_DIR" ]; then
+if [[ "$HEADLESS" == true ]]; then
   HEADLESS=true
 else
   HEADLESS=false
 fi
 
-if [[ "$HEADLESS" = false ]]; then
+export HEADLESS
+
+if [[ "$HEADLESS" == false ]]; then
   SECTION="~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
   echo ""
@@ -45,10 +47,69 @@ export CWD="$(cwd)"
 export PROJECT_DIR="$CWD"
 export DOCKER_DIR="$PROJECT_DIR/docker"
 
-export COMMANDS=(help status tail build restart start-cache dump-prod)
-export LOCAL_COMMANDS=(start open-site open-admin stop use-app use-data use-cache use-client status tail container-logs setup install uninstall config-repo copy-prod-to-dev)
-export DEV_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs deploy init-prod own-project setup-volume)
-export PROD_COMMANDS=(start-prod stop-prod open-site open-admin use-app use-client su-prod status tail container-logs deploy init-prod own-project setup-volume)
+# Basic server commands. Custom scripts may be added to $DOCKER_DIR/scripts,
+# see the README in that directory.
+export COMMANDS=(
+  help
+  build
+  install
+  open-admin
+  open-site
+  restart
+  show-logs
+  start
+  status
+  stop
+  tail-logs
+  use-app
+  use-client
+  use-object-cache
+)
+export LOCAL_COMMANDS=(
+  config-repo
+  import-prod-to-dev
+  import-prod-to-local
+  init-local
+  install-local
+  setup
+  setup-database
+  start-local
+  stop-local
+  uninstall
+  uninstall-local
+  use-data
+)
+export DEV_COMMANDS=(
+  deploy
+  dump-prod
+  init-prod
+  install-certificate
+  install-hooks
+  install-prod
+  install-site-user
+  own-project
+  own-volume
+  setup-volume
+  start-prod
+  stop-prod
+  su-prod
+  unlink
+)
+export PROD_COMMANDS=(
+  deploy
+  init-prod
+  install-certificate
+  install-hooks
+  install-prod
+  install-site-user
+  own-project
+  own-volume
+  setup-volume
+  start-prod
+  stop-prod
+  su-prod
+  unlink
+)
 
 COMMAND=$1
 
@@ -65,29 +126,36 @@ if [ -n "$(has_command $COMMAND)" ]; then
     echo "COMMAND: $COMMAND"
     echo ""
 
-    COMMAND_SCRIPT="$DOCKER_DIR/$COMMAND-server"
+    COMMAND_SCRIPT="$DOCKER_DIR/server/$COMMAND"
 
     if [ -s "$DOCKER_DIR/scripts/$COMMAND" ]; then
       COMMAND_SCRIPT="$DOCKER_DIR/scripts/$COMMAND"
     fi
 
     if [ -f "$COMMAND_SCRIPT" ]; then
+      HEADLESS_TEMP="$HEADLESS"
+      HEADLESS=true
+
       source "$COMMAND_SCRIPT"
+
+      HEADLESS="$HEADLESS_TEMP"
     else
       echo "Command not found!"
     fi
   else
     echo "APP MODE"
+    echo "======="
     echo "ALL    { ${COMMANDS[@]}"
     echo "LOCAL  { ${LOCAL_COMMANDS[@]}"
     echo "DEV    { ${DEV_COMMANDS[@]}"
     echo "PROD   { ${PROD_COMMANDS[@]}"
+    echo "======="
   fi
 else
   echo "Command $COMMAND not found for $APP_ENV."
 fi
 
-if [ "$HEADLESS" = false ]; then
+if [[ "$HEADLESS" == false ]]; then
   echo ""
   echo $SECTION
   echo ""

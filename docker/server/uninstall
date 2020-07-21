@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+elif [ -z "DEPLOY_ENV" ] || [ "$DEPLOY_ENV" != local ]; then
+  echo "Uninstall only available for LOCAL deployment environment."
+else
+  "$PROJECT_DIR/server" stop
+
+  echo ""
+
+  "$DOCKER_DIR/uninstall-local"
+fi

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
+  echo "PROJECT_DIR and DEPLOY_ENV are required."
+else
+  if [ "$DEPLOY_ENV" != local ]; then
+    echo "Database cannot be setup in non-local deployment environment."
+  else
+    if [ ! -n "$(docker inspect -f '{{.State.Running}}' "$PROJECT_KEY-data")" ]; then
+      source "$PROJECT_DIR/server" start
+    fi
+
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$PROJECT_DIR/.env" exec data /docker/setup-database
+  fi
+fi

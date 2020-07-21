@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
+else
+  echo "Running shell within cache container..."
+  echo ""
+
+  ENV_FILE="$PROJECT_DIR/.env"
+  COMPOSE_FILE="compose-local.yaml"
+
+  if [ "prod" == "$APP_ENV" ]; then
+    COMPOSE_FILE="compose-prod.yaml"
+  else
+    source "$PROJECT_DIR/.env.local"
+  fi
+
+  source "$PROJECT_DIR/.env.prod"
+
+  if [ -f "$ENV_FILE" ]; then
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" exec cache bash
+  else
+    echo "Environment file $ENV_FILE missing. Aborting."
+  fi
+fi

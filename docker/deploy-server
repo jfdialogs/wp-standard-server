@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-if [ -z "$DOCKER_DIR" ]; then
-  echo "DOCKER_DIR is required."
-else
-  source "$DOCKER_DIR/install-deployment-hooks"
-fi

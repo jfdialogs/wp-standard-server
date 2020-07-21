@@ -1,6 +1,7 @@
 # Container #
 ############
 .env
+.env*-*
 .env.local
 .env.prod
 .env.test
@@ -21,9 +22,12 @@ web/wp-content/index.php
 wp-content/cache/
 wp-content/backups/
 
-# Avoid accidental modification of pantheon.upstream.yml in sites
-# created from this upstream
-pantheon.upstream.yml
+### www custom ###
+############
+!web/ping.php
+!web/ads.txt
+!web/.htaccess
+docker/etc/varnish/secret
 
 # Packages #
 ############
@@ -39,8 +43,14 @@ pantheon.upstream.yml
 *.tgz
 !wp-includes/**/*.gz
 
+# Package vendor dirs #
+############
+vendor/
+node_modules/
+
 # Logs and databases #
 ######################
+logs/
 *.log
 *.sql
 

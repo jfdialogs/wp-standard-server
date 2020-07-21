@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+
+function rando {
+  echo "$(head -c1m /dev/urandom | sha1sum | cut -d' ' -f1)"
+}
+
+function backup_env {
+  ENV_NAME=$1
+
+  FILENAME="$PROJECT_DIR/.env"
+
+  if [ -n "$ENV_NAME" ]; then
+    FILENAME="$PROJECT_DIR/.env.$ENV_NAME"
+  fi
+
+  if [ -s "$FILENAME" ]; then
+    mv "$PROJECT_DIR/$FILENAME" "$PROJECT_DIR/$FILENAME-$(date '+%Y%m%d%H%M%S')"
+  fi
+}
+
+function make_project_env_file {
+  FILENAME="$PROJECT_DIR/.env"
+
+  echo "Generate PROD Environment Variables"
+  echo "====="
+  echo ""
+
+  echo "What is the project name (alphanumeric, dashes and periods only)?"
+
+  read PROJECT_KEY
+
+  echo "What is the project volume name (alphanumeric and underscores only)?"
+
+  read PROJECT_VOLUME
+
+  echo "What is the project site username (e.g., named site user, NOT root)?"
+
+  read SITE_USER
+
+  echo "Current server's external IP address?"
+
+  read SITE_EXTERNAL_IP
+
+  echo "What is the current deployment environment (local, dev, prod)?"
+
+  read DEPLOY_ENV
+
+  echo "What is the web protocol of the current environment (http or https)?"
+
+  read WEB_PROTOCOL
+
+  echo "What is the hostname of the current environment (e.g. sub.domain.com or alternate)?"
+
+  read WEB_HOSTNAME
+
+  echo "What is the web port to use (generally 80 or 8080 in prod)?"
+
+  read WEB_PORT
+
+  echo "What is the remote development hostname?"
+
+  read DEV_HOSTNAME
+
+  echo "What is the remote production hostname?"
+
+  read PROD_HOSTNAME
+
+  echo ""
+
+  echo "What is the Redis cache URL (rediss://default:[password]@[host]:[port]/[cache-key])?"
+
+  read REDIS_URL
+
+  echo "Enable HTTP acceleration (y/n)?"
+
+  read HTTP_ACCELERATION
+
+  echo "What is the AWS S3 bucket for production?"
+
+  read AS3CF_BUCKET
+
+  echo "What is the A@S Access Key ID for production?"
+
+  read AS3CF_AWS_ACCESS_KEY_ID
+
+  echo "What is the AWS Secret Access Key for production?"
+
+  read AS3CF_AWS_SECRET_ACCESS_KEY
+
+  BASE_URL="$WEB_PROTOCOL://$WEB_HOSTNAME"
+
+  if [ "$WEB_PORT" != "80" ] && [ "$WEB_PORT" != "8080" ]; then
+    BASE_URL="$BASE_URL:$WEB_PORT"
+  fi
+
+  if [[ "$HTTP_ACCELERATION" =~ ^[Yy]$ ]]; then
+    HTTP_ACCELERATION=yes
+  else
+    HTTP_ACCELERATION=no
+  fi
+
+  echo ""
+
+  echo "Using BASE_URL of $BASE_URL."
+  echo ""
+
+  echo "Writing $FILENAME..."
+
+  backup_env
+
+  echo "PROJECT_KEY=$PROJECT_KEY" > "$FILENAME"
+  echo "REPO_DIR=$PROJECT_DIR" >> "$FILENAME"
+  echo "RELAY_DIR=/deploy-relay" >> "$FILENAME"
+  echo "PROJECT_VOLUME=$PROJECT_VOLUME" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "SITE_USER=$SITE_USER" >> "$FILENAME"
+  echo "SITE_EXTERNAL_IP=$SITE_EXTERNAL_IP" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "APP_ENV=prod" >> "$FILENAME"
+  echo "DEPLOY_ENV=$DEPLOY_ENV" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> "$FILENAME"
+  echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> "$FILENAME"
+  echo "DEV_HOSTNAME=$DEV_HOSTNAME" >> "$FILENAME"
+  echo "DEV_BASE_URL=http://$DEV_HOSTNAME" >> "$FILENAME"
+  echo "PROD_HOSTNAME=$PROD_HOSTNAME" >> "$FILENAME"
+  echo "DEV_BASE_URL=http://$PROD_HOSTNAME" >> "$FILENAME"
+  echo "WEB_PORT=$WEB_PORT" >> "$FILENAME"
+  echo "BASE_URL=$BASE_URL" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "REDIS_URL=$REDIS_URL" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "AS3CF_BUCKET=$AS3CF_BUCKET" >> "$FILENAME"
+  echo "AS3CF_AWS_ACCESS_KEY_ID=$AS3CF_AWS_ACCESS_KEY_ID" >> "$FILENAME"
+  echo "AS3CF_AWS_SECRET_ACCESS_KEY=$AS3CF_AWS_SECRET_ACCESS_KEY" >> "$FILENAME"
+  echo "" >> "$FILENAME"
+  echo "WORDPRESS_AUTH_KEY=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_SECURE_AUTH_KEY=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_LOGGED_IN_KEY=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_NONCE_KEY=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_AUTH_SALT=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_SECURE_AUTH_SALT=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_LOGGED_IN_SALT=$(rando)" >> "$FILENAME"
+  echo "WORDPRESS_NONCE_SALT=$(rando)" >> "$FILENAME"
+}
+
+function make_prod_env_file {
+  FILENAME="$PROJECT_DIR/.env.prod"
+
+  echo "Generate Production Environment Variables"
+  echo "====="
+  echo ""
+
+  echo "What is the production database host?"
+
+  read PROD_DB_HOST
+
+  echo "What is the production database port?"
+
+  read PROD_DB_PORT
+
+  echo "What is the production database name (alphanumeric and underscores)?"
+
+  read PROD_DB_NAME
+
+  echo "What is the production database user?"
+
+  read PROD_DB_USER
+
+  echo "What is the production database user password?"
+
+  read PROD_DB_PASSWORD
+
+  echo ""
+
+  echo "Writing $FILENAME..."
+
+  backup_env prod
+
+  echo "PROD_DB_HOST=$PROD_DB_HOST" > "$FILENAME"
+  echo "PROD_DB_PORT=$PROD_DB_PORT" >> "$FILENAME"
+  echo "PROD_DB_NAME=$PROD_DB_NAME" >> "$FILENAME"
+  echo "PROD_DB_USER=$PROD_DB_USER" >> "$FILENAME"
+  echo "PROD_DB_PASSWORD=$PROD_DB_PASSWORD" >> "$FILENAME"
+}
+
+if [ -z "$PROJECT_DIR" ]; then
+  PROJECT_DIR=/deploy-repo
+
+  export PROJECT_DIR
+fi
+
+if [ -z "$DOCKER_DIR" ]; then
+  DOCKER_DIR="$PROJECT_DIR/docker"
+
+  export DOCKER_DIR
+fi
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+  echo "PROJECT_DIR and DOCKER_DIR are required."
+else
+  make_project_env_file
+
+  source "$PROJECT_DIR/.env"
+
+  echo ""
+
+  make_prod_env_file
+
+  source "$PROJECT_DIR/.env.prod"
+
+  echo ""
+
+  touch "$DOCKER_DIR/.installed"
+
+  echo $(date '+%Y-%m-%d %H:%M:%S') > "$DOCKER_DIR/.installed"
+
+  echo "Done."
+fi

@@ -140,14 +140,12 @@ else
         chown www-data /app
         chgrp www-data /app
 
-        cd /app
-
-        echo ""
         echo "Start prod server with '/app/server start-prod'."
         echo ""
       fi
 
       echo "Production server installed."
+      echo ""
     fi
   fi
 fi

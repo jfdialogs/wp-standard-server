@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+
+echo "DEFUNCT."
+exit
+
+PROJECT_DIR="$PWD"
+DOCKER_DIR="$PROJECT_DIR/docker"
+EXPORTS_DIR="$DOCKER_DIR/data/export"
+
+source "$PROJECT_DIR/.env"
+source "$PROJECT_DIR/.env.local"
+source "$PROJECT_DIR/.env.prod"
+
+function export_groups {
+  if [ -d "$EXPORTS_DIR" ]; then
+    echo "$(ls "$EXPORTS_DIR")"
+  fi
+}
+
+function imports {
+  SELECTED_GROUP=$1
+  SCRIPT_DIR="$EXPORTS_DIR/$SELECTED_GROUP"
+
+  if [ -d "$SCRIPT_DIR" ]; then
+    IMPORT_PATHS=$(ls "$SCRIPT_DIR")
+
+    echo "${IMPORT_PATHS[*]}"
+  fi
+}
+
+function run_import_jobs {
+  FILENAMES=("$1")
+
+  CONTAINER_CNF="$DOCKER_DIR/data/mysql/pantheon.cnf"
+
+  COUNTER=1
+
+  mysql --defaults-extra-file="$CONTAINER_CNF" -h wp-www-do-user-4673090-0.a.db.ondigitalocean.com -P 25060 -e "DROP DATABASE IF EXISTS \`www\`"
+  mysql --defaults-extra-file="$CONTAINER_CNF" -h wp-www-do-user-4673090-0.a.db.ondigitalocean.com -P 25060 -e "CREATE DATABASE IF NOT EXISTS \`www\`"
+
+  for SCRIPT in ${FILENAMES[*]};
+  do
+    LOCAL_PATH="$DOCKER_DIR/data/export/$SCRIPT"
+    CONTAINER_SCRIPT="$DOCKER_DIR/data/export/$SCRIPT"
+
+    echo "$COUNTER. Importing file://$LOCAL_PATH ..."
+
+    if [ ! -s "$LOCAL_PATH" ]; then
+      echo "$LOCAL_PATH import script not found."
+      echo ""
+    else
+      mysql --defaults-extra-file="$CONTAINER_CNF" -h wp-www-do-user-4673090-0.a.db.ondigitalocean.com -P 25060 -e "USE \`www\`; source $CONTAINER_SCRIPT;"
+    fi
+
+    COUNTER=$[COUNTER +1]
+  done
+
+  mysql --defaults-extra-file="$CONTAINER_CNF" -h wp-www-do-user-4673090-0.a.db.ondigitalocean.com -P 25060 -e "USE \`www\`; UPDATE wp_options SET option_value = 'https://www.dmagazine.com' WHERE option_name = 'siteurl';"
+  mysql --defaults-extra-file="$CONTAINER_CNF" -h wp-www-do-user-4673090-0.a.db.ondigitalocean.com -P 25060 -e "USE \`www\`; UPDATE wp_options SET option_value = 'https://www.dmagazine.com' WHERE option_name = 'home';"
+
+}
+
+function cnf_file {
+  ENV=$1
+  FILENAME="$DOCKER_DIR/data/mysql/$ENV-credentials.cnf"
+  DB_USER=$2
+  DB_PASSWORD=$3
+
+  echo "[client]" > $FILENAME
+  echo "user=$DB_USER" >> $FILENAME
+  echo "password=$DB_PASSWORD" >> $FILENAME
+
+  echo $FILENAME
+}
+
+EXPORT_DIRS=($(export_groups))
+
+echo ""
+echo "This command will load an exported database from www-prod in the local database."
+echo ""
+
+if [ -z "${EXPORT_DIRS[*]}" ]; then
+  echo "No export groups found. Dump WWW prod now?"
+
+  read ANSWER
+
+  if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+    echo "Running dump on www-prod..."
+    echo ""
+
+    "$DOCKER_DIR/scripts/dump-prod"
+  fi
+
+  EXPORT_DIRS=($(export_groups))
+fi
+
+if [ -n "${EXPORT_DIRS[*]}" ]; then
+  COUNTER=1
+
+  for EXPORTED in ${EXPORT_DIRS[*]};
+  do
+    echo "$COUNTER. $EXPORTED"
+
+    COUNTER=$[COUNTER +1]
+  done
+
+  echo ""
+  echo "Enter number for export group to run now."
+
+  read ANSWER
+
+  echo ""
+
+  ENTRY=$[ANSWER -1]
+
+  if [ -z "$ANSWER" ] || [ -z "${EXPORT_DIRS[$ENTRY]}" ]; then
+    echo "Entry not found."
+    echo ""
+  else
+    SELECTED_GROUP="${EXPORT_DIRS[$ENTRY]}"
+
+    echo "You picked import group: $SELECTED_GROUP. Continue (y/n)?"
+
+    read ANSWER
+
+    echo ""
+
+    if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+      IMPORT_SCRIPTS=($(imports "$SELECTED_GROUP"))
+      JOBS="$(printf "$SELECTED_GROUP/%s " ${IMPORT_SCRIPTS[*]})"
+
+      run_import_jobs "$JOBS"
+
+      echo ""
+      echo "Export import done."
+      echo ""
+    fi
+  fi
+fi

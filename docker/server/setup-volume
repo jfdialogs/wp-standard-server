@@ -16,13 +16,15 @@ else
     CONF_DIR="$MOUNT/conf"
     APACHE_DIR="$CONF_DIR/apache"
     LETSENCRYPT_DIR="$CONF_DIR/letsencrypt"
-    LETSENCRYPT_DIR="$CONF_DIR/redis"
+    VARNISH_DIR="$CONF_DIR/varnish"
+
+    chmod -R 775 "$MOUNT"
 
     if [ ! -d "$LOGS_DIR" ]; then
       echo "Making $LOGS_DIR..."
       echo ""
 
-      mkdir "$LOGS_DIR"
+      mkdir -m 775 "$LOGS_DIR"
       chown www-data "$LOGS_DIR"
       chgrp www-data "$LOGS_DIR"
     fi
@@ -31,7 +33,7 @@ else
       echo "Making $UPLOADS_DIR..."
       echo ""
 
-      mkdir "$UPLOADS_DIR"
+      mkdir -m 775 "$UPLOADS_DIR"
       chown www-data "$UPLOADS_DIR"
       chgrp www-data "$UPLOADS_DIR"
     fi
@@ -40,7 +42,7 @@ else
       echo "Making $CONF_DIR..."
       echo ""
 
-      mkdir "$CONF_DIR"
+      mkdir -m 775 "$CONF_DIR"
       chown www-data "$CONF_DIR"
       chgrp www-data "$CONF_DIR"
     fi
@@ -49,7 +51,7 @@ else
       echo "Making $APACHE_DIR..."
       echo ""
 
-      mkdir "$APACHE_DIR"
+      mkdir -m 775 "$APACHE_DIR"
       chown www-data "$APACHE_DIR"
       chgrp www-data "$APACHE_DIR"
     fi
@@ -58,20 +60,28 @@ else
       echo "Making $LETSENCRYPT_DIR..."
       echo ""
 
-      mkdir "$LETSENCRYPT_DIR"
+      mkdir -m 775 "$LETSENCRYPT_DIR"
       chown www-data "$LETSENCRYPT_DIR"
       chgrp www-data "$LETSENCRYPT_DIR"
     fi
 
-    if [ ! -d "$REDIS_DIR" ]; then
-      echo "Making $REDIS_DIR..."
+    if [ ! -d "$VARNISH_DIR" ]; then
+      echo "Making $VARNISH_DIR..."
       echo ""
 
-      mkdir "$REDIS_DIR"
-      chown www-data "$REDIS_DIR"
-      chgrp www-data "$REDIS_DIR"
+      mkdir -m 775 "$VARNISH_DIR"
+      chown www-data "$VARNISH_DIR"
+      chgrp www-data "$VARNISH_DIR"
     fi
 
-    echo "Volumne setup complete."
+    if [ ! -s "$VARNISH_DIR/secret" ]; then
+      echo "Generating $VARNISH_DIR/secret..."
+      echo ""
+
+      uuidgen > "$VARNISH_DIR/secret"
+      chgrp www-data "$VARNISH_DIR/secret"
+    fi
+
+    echo "Volume setup complete."
   fi
 fi

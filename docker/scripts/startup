@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+echo "Enabling and starting crontab."
+
+systemctl enable cron
+service cron start
+
+VHOST_CONF="/etc/apache2/sites-enabled/000-default.conf"
+PORTS_CONF="/etc/apache2/ports.conf"
+
+systemctl enable varnish
+
+if [ "$HTTP_ACCELERATION" == yes ]; then
+  echo "Starting HTTP acceleration."
+
+  sed -i -e 's/<VirtualHost \*:80>/<VirtualHost *:8080>/' "$VHOST_CONF"
+
+  if ! grep -q "8080" "$PORTS_CONF"; then
+    sed -i -e 's/80/8080/' "$PORTS_CONF"
+  fi
+
+  service varnish start
+else
+  echo "Disabling HTTP acceleration."
+
+  sed -i -e 's/<VirtualHost \*:8080>/<VirtualHost *:80>/' "$VHOST_CONF"
+  sed -i -e 's/:8080/:80/' "$PORTS_CONF"
+fi
+
+echo ""
+echo "Staring web server."
+echo ""
+
+/usr/local/bin/docker-entrypoint.sh apache2-foreground

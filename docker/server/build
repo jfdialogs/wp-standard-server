@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
+  echo "PROJECT_DIR and DEPLOY_ENV are required."
+else
+  COMPOSE_AS="$PROJECT_DIR/compose-local.yaml"
+
+  if [ "$DEPLOY_ENV" != "local" ]; then
+    COMPOSE_AS="$PROJECT_DIR/compose-prod.yaml"
+  fi
+
+  source "$PROJECT_DIR/.env"
+  source "$PROJECT_DIR/.env.prod"
+
+  export PROD_DB_HOST
+  export PROD_DB_PORT
+  export PROD_DB_NAME
+  export PROD_DB_USER
+  export PROD_DB_PASSWORD
+
+  time docker-compose -f "$COMPOSE_AS" build
+
+  echo ""
+  echo "Container rebuilt, use ./server restart to use new container."
+  echo ""
+fi
