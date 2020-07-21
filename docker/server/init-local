@@ -99,7 +99,7 @@ function make_project_env_file {
   setup_local_host "$WEB_HOSTNAME"
 
   echo "PROJECT_KEY=$PROJECT_KEY" > "$FILENAME"
-  echo "APP_ENV=PROD" >> "$FILENAME"
+  echo "APP_ENV=$APP_ENV" >> "$FILENAME"
   echo "DEPLOY_ENV=$DEPLOY_ENV" >> "$FILENAME"
   echo "" >> "$FILENAME"
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> "$FILENAME"

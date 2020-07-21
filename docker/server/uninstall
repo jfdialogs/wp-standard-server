@@ -9,5 +9,5 @@ else
 
   echo ""
 
-  "$DOCKER_DIR/uninstall-local"
+  "$PROJECT_DIR/server" uninstall-local
 fi

@@ -5,7 +5,12 @@ function dump_filename {
   TABLE_NAME=$2
   EXPORTED_AT=$3
 
-  PATH_TO_EXPORTS="$DOCKER_DIR/data/export/$EXPORTED_AT"
+  EXPORTS_DIR="$DOCKER_DIR/data/export"
+  PATH_TO_EXPORTS="$EXPORTS_DIR/$EXPORTED_AT"
+
+  if [ ! -d "$EXPORTS_DIR" ]; then
+    mkdir "$EXPORTS_DIR"
+  fi
 
   if [ ! -d "$PATH_TO_EXPORTS" ]; then
     mkdir "$PATH_TO_EXPORTS"
@@ -82,5 +87,4 @@ else
 
   echo ""
   echo "${PROJECT_KEY} prod database dump done."
-  echo ""
 fi

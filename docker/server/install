@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 
-if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
-  echo "PROJECT_DIR and DEPLOY_ENV are required."
+if [ -z "$PROJECT_DIR" ]; then
+  echo "PROJECT_DIR is required."
 else
+  echo "What is the deployment environment (local, dev or prod)?"
+
+  read DEPLOY_ENV
+
+  echo ""
+
+  export DEPLOY_ENV
+
   if [ "$DEPLOY_ENV" == "local" ]; then
     "$PROJECT_DIR/server" install-local
-  else
+  elif [ "$DEPLOY_ENV" == "dev" ] || [ "$DEPLOY_ENV" == "prod" ]; then
     "$PROJECT_DIR/server" install-prod
+  else
+    echo "Invalid deployment option $DEPLOY_ENV given, aborting."
   fi
 fi

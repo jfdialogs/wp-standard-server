@@ -34,7 +34,7 @@ function run_import_jobs {
   do
     LOCAL_PATH="$DOCKER_DIR/data/export/$SCRIPT"
     SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT"
-    CONTAINER_SCRIPT="/var/lib/mysql/export/$SCRIPT"
+    CONTAINER_SCRIPT="/docker/data/export/$SCRIPT"
 
     echo "$COUNTER. Importing file://$LOCAL_PATH ..."
 
@@ -82,20 +82,22 @@ else
   EXPORTS_DIR="$DOCKER_DIR/data/export"
   EXPORT_DIRS=($(export_groups))
 
-  if [ -z "${EXPORT_DIRS[*]}" ]; then
-    echo "No export groups found. Dump ${PROJECT_KEY} prod now?"
+  echo "Dump ${PROJECT_KEY} prod now (y/n)?"
 
-    read ANSWER
+  read ANSWER
 
-    if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
-      echo "Running dump on ${PROJECT_KEY}-prod..."
-      echo ""
+  echo ""
 
-      "$DOCKER_DIR/scripts/dump-prod"
-    fi
+  if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+    echo "Running dump on ${PROJECT_KEY}-prod..."
+    echo ""
 
-    EXPORT_DIRS=($(export_groups))
+    time "$PROJECT_DIR/server" dump-prod
+
+    echo ""
   fi
+
+  EXPORT_DIRS=($(export_groups))
 
   if [ -n "${EXPORT_DIRS[*]}" ]; then
     COUNTER=1
@@ -136,7 +138,6 @@ else
 
         echo ""
         echo "Export import done."
-        echo ""
       fi
     fi
   fi
