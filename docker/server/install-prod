@@ -40,7 +40,7 @@ else
   export DEPLOY_ENV
   export SITE_USER
 
-  bash <(wget -qO - https://raw.githubusercontent.com/jfdialogs/wp-standard-server/master/docker/install-site-user)
+  bash <(wget -qO - https://raw.githubusercontent.com/jfdialogs/wp-standard-server/master/docker/server/install-site-user)
 
   echo ""
 
