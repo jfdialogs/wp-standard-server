@@ -3,6 +3,7 @@
 if [ "root" != "$(whoami)" ]; then
   echo "Installation script must be run as root."
 else
+  HEADLESS=true
   PROJECT_DIR="/deploy-repo"
   RELAY_DIR="/deploy-relay"
   DOCKER_DIR="$PROJECT_DIR/docker"
@@ -34,6 +35,7 @@ else
 
   SITE_USER=dmag
 
+  export HEADLESS
   export PROJECT_DIR
   export RELAY_DIR
   export DOCKER_DIR
