@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+function strip_hostname_protocol {
+  HOSTNAME="$1"
+
+  echo "$HOSTNAME" | sed -e 's/https:\/\///; s/http:\/\///; s/\:[\d]//; s/\///;'
+}
+
+function sub_local_hostname {
+  HOSTNAME="$1"
+
+  echo "$(echo "$HOSTNAME" | sed -e 's/\(.[a-z]*\)$/.local/')"
+}
+
 function backup_env {
   ENV_NAME="$1"
 
@@ -19,11 +31,10 @@ function setup_local_host {
 
   HOSTS_FILE="/etc/hosts"
 
-  if ! grep -q "HOSTNAME" "$HOSTS_FILE"; then
+  if ! grep -q "$HOSTNAME" "$HOSTS_FILE"; then
     echo "Adding local host entry for $HOSTNAME..."
 
     echo "127.0.0.1       $HOSTNAME" | sudo tee -a "$HOSTS_FILE"
-
     echo ""
   fi
 }
@@ -39,17 +50,15 @@ function make_project_env_file {
 
   read PROJECT_KEY
 
-  echo "What is the project site username (e.g., named site user)?"
+  echo "What is the current application environment (dev or prod)?"
 
-  read SITE_USER
+  if [ -z "$DEPLOY_ENV" ]; then
+    echo "What is the current deployment environment (local or prod)?"
 
-  echo "What is the current application environment (dev, test, prod)?"
+    read DEPLOY_ENV
+  fi
 
   read APP_ENV
-
-  echo "What is the current deployment environment (local, dev, prod)?"
-
-  read DEPLOY_ENV
 
   echo "What is the web protocol of the current environment (http or https)?"
 
@@ -59,17 +68,21 @@ function make_project_env_file {
 
   read WEB_PORT
 
-  echo "What is the remote production hostname?"
+  echo "What is the remote PROD hostname (typically www.[domain].com)?"
 
   read PROD_HOSTNAME
 
-  echo "What is the remote development hostname?"
+  PROD_HOSTNAME="$(strip_hostname_protocol $PROD_HOSTNAME)"
+
+  echo "What is the remote DEV hostname (typically dev.[domain].com)?"
 
   read DEV_HOSTNAME
 
-  WEB_HOSTNAME="$(echo "$PROD_HOSTNAME" | sed s/.com$/.local/)"
+  DEV_HOSTNAME="$(strip_hostname_protocol $DEV_HOSTNAME)"
 
   echo ""
+
+  WEB_HOSTNAME="$(sub_local_hostname $PROD_HOSTNAME)"
 
   BASE_URL="$WEB_PROTOCOL://$WEB_HOSTNAME"
 
@@ -91,11 +104,9 @@ function make_project_env_file {
   echo ""
 
   echo "Writing $FILENAME..."
-
-  backup_env
-
   echo ""
 
+  backup_env
   setup_local_host "$WEB_HOSTNAME"
 
   echo "PROJECT_KEY=$PROJECT_KEY" > "$FILENAME"
@@ -109,7 +120,7 @@ function make_project_env_file {
   echo "DEV_HOSTNAME=$DEV_HOSTNAME" >> "$FILENAME"
   echo "DEV_BASE_URL=http://$DEV_HOSTNAME" >> "$FILENAME"
   echo "PROD_HOSTNAME=$PROD_HOSTNAME" >> "$FILENAME"
-  echo "DEV_BASE_URL=http://$PROD_HOSTNAME" >> "$FILENAME"
+  echo "PROD_BASE_URL=http://$PROD_HOSTNAME" >> "$FILENAME"
   echo "" >> "$FILENAME"
   echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> "$FILENAME"
   echo "" >> "$FILENAME"
@@ -125,37 +136,41 @@ function make_local_env_file {
   echo "====="
   echo ""
 
-  echo "What is the project's remote repository url (git@...)?"
-
-  read ORIGIN_REPO
-
-  echo "Enable HTTP acceleration (y/n)?"
+  echo "Enable HTTP acceleration (y/n)? Note, this requires SSL termination in prod."
 
   read HTTP_ACCELERATION
 
-  echo "What is the project's DEV remote deployment url (root@[IP or domain])?"
+  echo ""
+
+  echo "What is the project's remote repository account (git@github.com:[org]/[project].git)?"
+
+  read ORIGIN_REPO
+
+  echo "What is the project's DEV remote deployment account ([site-user]@[domain], leave empty if none)?"
 
   read DEPLOYMENT_REPO_DEV
 
-  echo "What is the project's PROD 01 remote deployment url (root@[IP or domain])?"
+  echo "What is the project's PROD 01 remote deployment account ([site-user]@[domain], leave empty if none)?"
 
   read DEPLOYMENT_REPO_PROD_01
 
-  echo "What is the project's PROD 02 remote deployment url (root@[IP or domain])?"
+  echo "What is the project's PROD 02 remote deployment account ([site-user]@[domain], leave empty if none)?"
 
   read DEPLOYMENT_REPO_PROD_02
 
-  echo "What is the project's PROD 03 remote deployment url (root@[IP or domain])?"
+  echo "What is the project's PROD 03 remote deployment account ([site-user]@[domain], leave empty if none)?"
 
   read DEPLOYMENT_REPO_PROD_03
 
-  echo "What is the project's PROD 04 remote deployment url (root@[IP or domain])?"
+  echo "What is the project's PROD 04 remote deployment account ([site-user]@[domain], leave empty if none)?"
 
   read DEPLOYMENT_REPO_PROD_04
 
-  echo "What is the project's PROD 05 remote deployment url (root@[IP or domain])?"
+  echo "What is the project's PROD 05 remote deployment account ([site-user]@[domain], leave empty if none)?"
 
   read DEPLOYMENT_REPO_PROD_05
+
+  echo ""
 
   echo "What is the local database name (alphanumeric and underscores)?"
 
@@ -169,7 +184,9 @@ function make_local_env_file {
 
   read MYSQL_PASSWORD
 
-  echo "What is the AWS S3 bucket for local dev?"
+  echo ""
+
+  echo "What is the AWS S3 bucket for local dev (leave empty if none)?"
 
   read AS3CF_BUCKET
 
@@ -180,6 +197,8 @@ function make_local_env_file {
   echo "What is the AWS Secret Access Key for local dev?"
 
   read AS3CF_AWS_SECRET_ACCESS_KEY
+
+  echo ""
 
   if [[ "$HTTP_ACCELERATION" =~ ^[Yy]$ ]]; then
     HTTP_ACCELERATION=yes
@@ -211,9 +230,8 @@ function make_local_env_file {
     DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_05:/deploy-relay"
   fi
 
-  echo ""
-
   echo "Writing $FILENAME..."
+  echo ""
 
   backup_env local
 
@@ -240,9 +258,9 @@ function make_local_env_file {
   echo "DEPLOYMENT_REPO_PROD_03=$DEPLOYMENT_REPO_PROD_03" >> "$FILENAME"
   echo "DEPLOYMENT_REPO_PROD_04=$DEPLOYMENT_REPO_PROD_04" >> "$FILENAME"
   echo "DEPLOYMENT_REPO_PROD_05=$DEPLOYMENT_REPO_PROD_05" >> "$FILENAME"
-  echo ""
+  echo "" >> "$FILENAME"
   echo "REDIS_URL=redis://cache:6379" >> "$FILENAME"
-  echo ""
+  echo "" >> "$FILENAME"
   echo "AS3CF_BUCKET=$AS3CF_BUCKET" >> "$FILENAME"
   echo "AS3CF_AWS_ACCESS_KEY_ID=$AS3CF_AWS_ACCESS_KEY_ID" >> "$FILENAME"
   echo "AS3CF_AWS_SECRET_ACCESS_KEY=$AS3CF_AWS_SECRET_ACCESS_KEY" >> "$FILENAME"
@@ -278,6 +296,7 @@ function make_prod_env_file {
   echo ""
 
   echo "Writing $FILENAME..."
+  echo ""
 
   backup_env prod
 
@@ -289,9 +308,20 @@ function make_prod_env_file {
 }
 
 function make_project_directories {
-  WP_CONTENT="$PROJECT_DIR/wp-content"
+  PROJECT_LOGS="$PROJECT_DIR/logs"
+  PROJECT_DATA="$DOCKER_DIR/data"
+
+  WP_CONTENT="$PROJECT_DIR/web/wp-content"
   WP_CONTENT_PLUGINS="$WP_CONTENT/plugins"
   WP_CONTENT_THEMES="$WP_CONTENT/themes"
+
+  if [ ! -d "$PROJECT_LOGS" ]; then
+    mkdir "$PROJECT_LOGS"
+  fi
+
+  if [ ! -d "$PROJECT_DATA" ]; then
+    mkdir "$PROJECT_DATA"
+  fi
 
   if [ ! -d "$WP_CONTENT" ]; then
     mkdir "$WP_CONTENT"
@@ -311,19 +341,21 @@ if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
 else
   make_project_env_file
 
-  source "$PROJECT_DIR/.env" && echo ""
+  source "$PROJECT_DIR/.env"
 
   make_local_env_file
 
-  source "$PROJECT_DIR/.env.local" && echo ""
+  source "$PROJECT_DIR/.env.local"
 
   make_prod_env_file
 
-  source "$PROJECT_DIR/.env.prod" && echo ""
+  source "$PROJECT_DIR/.env.prod"
+
+  make_project_directories
 
   touch "$DOCKER_DIR/.installed"
 
   echo $(date '+%Y-%m-%d %H:%M:%S') >> "$DOCKER_DIR/.installed"
 
-  echo "Done."
+  echo "Done. Run './server config-repo' to setup remote repositories for deployment."
 fi
