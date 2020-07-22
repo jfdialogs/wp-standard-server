@@ -41,9 +41,15 @@ function make_project_env_file {
 
   read SITE_EXTERNAL_IP
 
-  echo "What is the current deployment environment (local, dev, prod)?"
+  echo "What is the current application environment (dev or prod)?"
 
-  read DEPLOY_ENV
+  read APP_ENV
+
+  if [ -z "$DEPLOY_ENV" ]; then
+    echo "What is the current deployment environment (local or prod)?"
+
+    read DEPLOY_ENV
+  fi
 
   echo "What is the web protocol of the current environment (http or https)?"
 
@@ -77,6 +83,8 @@ function make_project_env_file {
 
   echo "What is the AWS S3 bucket for production?"
 
+  echo ""
+
   read AS3CF_BUCKET
 
   echo "What is the A@S Access Key ID for production?"
@@ -86,6 +94,8 @@ function make_project_env_file {
   echo "What is the AWS Secret Access Key for production?"
 
   read AS3CF_AWS_SECRET_ACCESS_KEY
+
+  echo ""
 
   BASE_URL="$WEB_PROTOCOL://$WEB_HOSTNAME"
 
@@ -99,12 +109,11 @@ function make_project_env_file {
     HTTP_ACCELERATION=no
   fi
 
-  echo ""
-
   echo "Using BASE_URL of $BASE_URL."
   echo ""
 
   echo "Writing $FILENAME..."
+  echo ""
 
   backup_env
 
@@ -116,7 +125,7 @@ function make_project_env_file {
   echo "SITE_USER=$SITE_USER" >> "$FILENAME"
   echo "SITE_EXTERNAL_IP=$SITE_EXTERNAL_IP" >> "$FILENAME"
   echo "" >> "$FILENAME"
-  echo "APP_ENV=prod" >> "$FILENAME"
+  echo "APP_ENV=$APP_ENV" >> "$FILENAME"
   echo "DEPLOY_ENV=$DEPLOY_ENV" >> "$FILENAME"
   echo "" >> "$FILENAME"
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> "$FILENAME"
@@ -176,6 +185,7 @@ function make_prod_env_file {
   echo ""
 
   echo "Writing $FILENAME..."
+  echo ""
 
   backup_env prod
 
