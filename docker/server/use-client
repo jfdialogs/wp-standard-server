@@ -12,8 +12,6 @@ else
     echo "Connecting to LOCAL database."
     echo ""
 
-    COMPOSE_FILE="compose-local.yaml"
-
     source "$PROJECT_DIR/.env.local"
 
     docker-compose -f "$PROJECT_DIR/compose-local.yaml" exec data mysql -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" -h "$WORDPRESS_DB_HOST" -D "$WORDPRESS_DB_NAME"
@@ -21,15 +19,19 @@ else
     echo "Connecting to REMOTE $APP_ENV database."
     echo ""
 
-    COMPOSE_FILE="compose-prod.yaml"
-
     source "$PROJECT_DIR/.env.prod"
+
+    DATABASE_NAME="$PROD_DB_NAME"
+
+    if [ "$DEPLOY_ENV" != "prod" ]; then
+      DATABASE_NAME="${DATABASE_NAME}_dev"
+    fi
 
     if [ -x "$(command -v mysql)" ]; then
       if [ -n "$PROD_DB_NAME" ]; then
         mysql -u "$PROD_DB_USER" -p"$PROD_DB_PASSWORD" -h "$PROD_DB_HOST" -P "$PROD_DB_PORT"
       else
-        mysql -u "$PROD_DB_USER" -p"$PROD_DB_PASSWORD" -h "$PROD_DB_HOST" -P "$PROD_DB_PORT" -D "$PROD_DB_NAME"
+        mysql -u "$PROD_DB_USER" -p"$PROD_DB_PASSWORD" -h "$PROD_DB_HOST" -P "$PROD_DB_PORT" -D "$DATABASE_NAME"
       fi
     else
       echo "MySQL client is required but not found."

@@ -24,9 +24,8 @@ do
 
     git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
 
-    echo ""
-
-    cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
+    sudo chmod 775 "$DOCKER_DIR/etc/varnish/default.vcl"
+    sudo cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
     sudo chgrp www-data "$CACHE_DIR/default.vcl"
 
     "$PROJECT_DIR/server" start
@@ -38,9 +37,8 @@ do
 
     git --work-tree="$PROJECT_DIR" --git-dir="$GIT_DIR" checkout -f "$BRANCH"
 
-    echo ""
-
-    cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
+    sudo chmod 775 "$DOCKER_DIR/etc/varnish/default.vcl"
+    sudo cp "$DOCKER_DIR/etc/varnish/default.vcl" "$CACHE_DIR/default.vcl"
     sudo chgrp www-data "$CACHE_DIR/default.vcl"
 
     "$PROJECT_DIR/server" start

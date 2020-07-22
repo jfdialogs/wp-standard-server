@@ -4,6 +4,18 @@ function rando {
   echo "$(head -c1m /dev/urandom | sha1sum | cut -d' ' -f1)"
 }
 
+function strip_hostname_protocol {
+  HOSTNAME="$1"
+
+  echo "$HOSTNAME" | sed -e 's/https:\/\///; s/http:\/\///; s/\:[\d]//; s/\///;'
+}
+
+function sub_local_hostname {
+  HOSTNAME="$1"
+
+  echo "$(echo "$HOSTNAME" | sed -e 's/\(.[a-z]*\)$/.local/')"
+}
+
 function backup_env {
   ENV_NAME=$1
 
@@ -25,6 +37,24 @@ function make_project_env_file {
   echo "====="
   echo ""
 
+  if [ -z "$DEPLOY_ENV" ]; then
+    echo "What is the current deployment environment (dev or prod)?"
+
+    read DEPLOY_ENV
+
+    if [ "$DEPLOY_ENV" != "dev" ] && [ "$DEPLOY_ENV" != "prod" ]; then
+      echo "DEPLOY_ENV for PROD install may only be dev or prod, aborting."
+      echo ""
+
+      exit 1
+    fi
+  fi
+
+  APP_ENV=prod
+
+  export APP_ENV
+  export DEPLOY_ENV
+
   echo "What is the project name (alphanumeric, dashes and periods only)?"
 
   read PROJECT_KEY
@@ -41,16 +71,6 @@ function make_project_env_file {
 
   read SITE_EXTERNAL_IP
 
-  echo "What is the current application environment (dev or prod)?"
-
-  read APP_ENV
-
-  if [ -z "$DEPLOY_ENV" ]; then
-    echo "What is the current deployment environment (local or prod)?"
-
-    read DEPLOY_ENV
-  fi
-
   echo "What is the web protocol of the current environment (http or https)?"
 
   read WEB_PROTOCOL
@@ -63,15 +83,19 @@ function make_project_env_file {
 
   read WEB_PORT
 
-  echo "What is the remote development hostname?"
-
-  read DEV_HOSTNAME
-
-  echo "What is the remote production hostname?"
+  echo "What is the remote PROD hostname (typically www.[domain].com)?"
 
   read PROD_HOSTNAME
 
+  echo "What is the remote DEV hostname (typically dev.[domain].com)?"
+
+  read DEV_HOSTNAME
+
   echo ""
+
+  WEB_HOSTNAME="$(strip_hostname_protocol $WEB_HOSTNAME)"
+  PROD_HOSTNAME="$(strip_hostname_protocol $PROD_HOSTNAME)"
+  DEV_HOSTNAME="$(strip_hostname_protocol $DEV_HOSTNAME)"
 
   echo "What is the Redis cache URL (rediss://default:[password]@[host]:[port]/[cache-key])?"
 
@@ -81,9 +105,9 @@ function make_project_env_file {
 
   read HTTP_ACCELERATION
 
-  echo "What is the AWS S3 bucket for production?"
-
   echo ""
+
+  echo "What is the AWS S3 bucket for production?"
 
   read AS3CF_BUCKET
 

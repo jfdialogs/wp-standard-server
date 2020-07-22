@@ -46,19 +46,15 @@ function make_project_env_file {
   echo "====="
   echo ""
 
+  APP_ENV=dev
+  DEPLOY_ENV=local
+
+  export APP_ENV
+  export DEPLOY_ENV
+
   echo "What is the project name (alphanumeric, dashes and periods only)?"
 
   read PROJECT_KEY
-
-  echo "What is the current application environment (dev or prod)?"
-
-  if [ -z "$DEPLOY_ENV" ]; then
-    echo "What is the current deployment environment (local or prod)?"
-
-    read DEPLOY_ENV
-  fi
-
-  read APP_ENV
 
   echo "What is the web protocol of the current environment (http or https)?"
 
@@ -72,17 +68,15 @@ function make_project_env_file {
 
   read PROD_HOSTNAME
 
-  PROD_HOSTNAME="$(strip_hostname_protocol $PROD_HOSTNAME)"
-
   echo "What is the remote DEV hostname (typically dev.[domain].com)?"
 
   read DEV_HOSTNAME
 
   DEV_HOSTNAME="$(strip_hostname_protocol $DEV_HOSTNAME)"
+  PROD_HOSTNAME="$(strip_hostname_protocol $PROD_HOSTNAME)"
+  WEB_HOSTNAME="$(sub_local_hostname $PROD_HOSTNAME)"
 
   echo ""
-
-  WEB_HOSTNAME="$(sub_local_hostname $PROD_HOSTNAME)"
 
   BASE_URL="$WEB_PROTOCOL://$WEB_HOSTNAME"
 
@@ -211,23 +205,23 @@ function make_local_env_file {
   fi
 
   if [ -n "$DEPLOYMENT_REPO_PROD_01" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_01:/deploy-relay"
+    DEPLOYMENT_REPO_PROD_01="$DEPLOYMENT_REPO_PROD_01:/deploy-relay"
   fi
 
   if [ -n "$DEPLOYMENT_REPO_PROD_02" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_02:/deploy-relay"
+    DEPLOYMENT_REPO_PROD_02="$DEPLOYMENT_REPO_PROD_02:/deploy-relay"
   fi
 
   if [ -n "$DEPLOYMENT_REPO_PROD_03" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_03:/deploy-relay"
+    DEPLOYMENT_REPO_PROD_03="$DEPLOYMENT_REPO_PROD_03:/deploy-relay"
   fi
 
   if [ -n "$DEPLOYMENT_REPO_PROD_04" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_04:/deploy-relay"
+    DEPLOYMENT_REPO_PROD_04="$DEPLOYMENT_REPO_PROD_04:/deploy-relay"
   fi
 
   if [ -n "$DEPLOYMENT_REPO_PROD_05" ]; then
-    DEPLOYMENT_REPO_PROD="$DEPLOYMENT_REPO_PROD_05:/deploy-relay"
+    DEPLOYMENT_REPO_PROD_05="$DEPLOYMENT_REPO_PROD_05:/deploy-relay"
   fi
 
   echo "Writing $FILENAME..."

@@ -21,12 +21,12 @@ else
     echo "DEPLOY_ENV is required."
     echo ""
 
-    exit
+    exit 1
   elif [ "$DEPLOY_ENV" != "prod" ] && [ "$DEPLOY_ENV" != "dev" ]; then
-    echo "DEPLOY_ENV is required to be dev or prod."
+    echo "DEPLOY_ENV is required to be dev or prod for production installs."
     echo ""
 
-    exit
+    exit 1
   elif [ "$DEPLOY_ENV" == "dev" ]; then
     DEPLOY_BRANCH=master
   elif [ "$DEPLOY_ENV" == "prod" ]; then
@@ -76,7 +76,7 @@ else
       chgrp -R "$SITE_USER" "$PROJECT_DIR"
       chgrp -R "$SITE_USER" "$RELAY_DIR"
 
-      echo "Git cloing $GIT_REPO  branch $DEPLOY_BRANCH into $PROJECT_DIR as $SITE_USER"
+      echo "Git cloning $GIT_REPO  branch $DEPLOY_BRANCH into $PROJECT_DIR as $SITE_USER"
       echo ""
 
       su -c "git clone -b $DEPLOY_BRANCH $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
