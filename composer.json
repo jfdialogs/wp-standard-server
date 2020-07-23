@@ -1,6 +1,6 @@
 {
-    "name": "dmagazine/wp-www",
-    "description": "D Magazine WWW site repository.",
+    "name": "dmagazine/wp-peopne-newspapers",
+    "description": "D Magazine People Newspapers site repository.",
     "minimum-stability": "dev",
     "require": {
         "php": "^7.3"

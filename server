@@ -61,6 +61,7 @@ COMMANDS=(
   open-site
   restart
   show-logs
+  show-config
   start
   status
   stop
