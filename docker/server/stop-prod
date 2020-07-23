@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
+if [ -z "$PROJECT_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
 else
   echo "Stopping container..."
@@ -16,8 +16,9 @@ else
   export PROD_DB_USER
   export PROD_DB_PASSWORD
 
-  docker-compose -f "$PROJECT_DIR/compose-prod.yaml" stop
+  docker-compose -f "$REPO_DIR/compose-prod.yaml" stop
 
   echo ""
+
   echo "Stopped."
 fi

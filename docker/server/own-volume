@@ -2,7 +2,7 @@
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
-elif [ -z "$DEPLOY_ENV" ] || [ "$DEPLOY_ENV" != "prod" ]; then
+elif [ -z "$DEPLOY_ENV" ] || [ "$DEPLOY_ENV" == "local" ]; then
   echo "Running PROD configuraiton in non-PROD deployment environment is discouraged."
 else
   source "$PROJECT_DIR/.env"

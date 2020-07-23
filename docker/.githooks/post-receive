@@ -1,11 +1,11 @@
 #!/bin/bash
 
-GIT_DIR="/deploy-relay"
-PROJECT_DIR="/deploy-repo"
-DOCKER_DIR="/deploy-repo/docker"
+source "/deploy-repo/.env"
+source "/deploy-repo/.env.prod"
 
-source "$PROJECT_DIR/.env"
-source "$PROJECT_DIR/.env.prod"
+GIT_DIR="$RELAY_DIR"
+PROJECT_DIR="$REPO_DIR"
+DOCKER_DIR="$PROJECT_DIR/docker"
 
 while read oldrev newrev ref
 do

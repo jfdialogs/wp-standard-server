@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
+  echo "PROJECT_DIR and DEPLOY_ENV are required."
+else
+  source "$PROJECT_DIR/.env"
+
+  echo "DEPLOY_ENV: $DEPLOY_ENV"
+  echo ""
+
+  if [ "$DEPLOY_ENV" == "local" ]; then
+    source "$PROJECT_DIR/.env.local"
+    source "$PROJECT_DIR/.env.prod"
+
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" config
+  else
+    source "$PROJECT_DIR/.env.prod"
+
+    export PROD_DB_HOST
+    export PROD_DB_PORT
+    export PROD_DB_NAME
+    export PROD_DB_USER
+    export PROD_DB_PASSWORD
+
+    docker-compose -f "$PROJECT_DIR/compose-prod.yaml" config
+  fi
+fi

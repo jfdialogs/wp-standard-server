@@ -16,8 +16,13 @@ elif [ ! -f "/.dockerenv" ]; then
   echo "following command to access the container cli:"
   echo ""
   echo "    $ /app/server use-app"
+  echo "    $ /docker/server/install-certificate"
   echo ""
 else
+  echo ""
+  echo "This will install a security certificate for the following web hostname:"
+  echo ""
+  echo "    $WEB_HOSTNAME"
   echo ""
   echo " ### Using container shell"
   echo ""

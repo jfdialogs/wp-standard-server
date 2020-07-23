@@ -164,6 +164,7 @@ function make_project_env_file {
   echo "MYSQL_RANDOM_ROOT_PASSWORD='1'" >> "$FILENAME"
   echo "" >> "$FILENAME"
   echo "REDIS_URL=$REDIS_URL" >> "$FILENAME"
+  echo "HTTP_ACCELERATION=$HTTP_ACCELERATION" >> "$FILENAME"
   echo "" >> "$FILENAME"
   echo "AS3CF_BUCKET=$AS3CF_BUCKET" >> "$FILENAME"
   echo "AS3CF_AWS_ACCESS_KEY_ID=$AS3CF_AWS_ACCESS_KEY_ID" >> "$FILENAME"

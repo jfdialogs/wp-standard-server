@@ -1,6 +1,6 @@
 {
-    "name": "dmagazine/wp-standard-container",
-    "description": "A standard WordPress docker containerization configuration for D-Magazine sites.",
+    "name": "dmagazine/wp-www",
+    "description": "D Magazine WWW site repository.",
     "minimum-stability": "dev",
     "require": {
         "php": "^7.3"

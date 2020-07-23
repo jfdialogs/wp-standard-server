@@ -2,8 +2,8 @@
 
 if [ -z "$PROJECT_DIR" ] || [ -z "$DOCKER_DIR" ]; then
   echo "PROJECT_DIR and DOCKER_DIR are required."
-elif [ -z "$APP_ENV" ] || [ "$APP_ENV" != "prod" ]; then
-  echo "Running PROD configuraiton in DEV is discouraged."
+elif [ -z "$APP_ENV" ] || [ "$APP_ENV" == "local" ]; then
+  echo "Running PROD configuraiton in LOCAL is discouraged."
 else
   echo "Starting production server."
   echo ""
@@ -23,27 +23,27 @@ else
   export PROD_DB_USER
   export PROD_DB_PASSWORD
 
-  echo "Stopping any running server containers..."
+  echo "Stopping running server containers..."
   echo ""
 
-  time "$PROJECT_DIR/server" stop-prod
+  time "$REPO_DIR/server" stop-prod
 
   echo ""
   echo "Starting server...."
   echo ""
 
-  RUN_COMMAND="docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans;"
-
   if [ $(whoami) != "$SITE_USER" ]; then
     echo "su'ing $SITE_USER..."
     echo ""
 
-    time su -c "cd $PROJECT_DIR ; source $PROJECT_DIR/.env ; docker-compose -f $PROJECT_DIR/compose-prod.yaml up -d --remove-orphans" -m - "$SITE_USER"
+    time su -c "cd $REPO_DIR ; source $REPO_DIR/.env ; docker-compose -f $REPO_DIR/compose-prod.yaml up -d --remove-orphans" -m - "$SITE_USER"
   else
     echo "Running as $SITE_USER..."
     echo ""
 
-    time eval "$RUN_COMMAND"
+    cd "$REPO_DIR"
+
+    time docker-compose -f "$REPO_DIR/compose-prod.yaml" up -d --remove-orphans
   fi
 
   echo ""
