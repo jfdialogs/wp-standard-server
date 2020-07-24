@@ -5,12 +5,14 @@ if [ -z "$PROJECT_DIR" ] || [ -z "$DEPLOY_ENV" ]; then
 else
   COMPOSE_AS="$PROJECT_DIR/compose-local.yaml"
 
-  if [ "$DEPLOY_ENV" != "local" ]; then
-    COMPOSE_AS="$PROJECT_DIR/compose-prod.yaml"
-  fi
-
   source "$PROJECT_DIR/.env"
   source "$PROJECT_DIR/.env.prod"
+
+  if [ "$DEPLOY_ENV" != "local" ]; then
+    PROJECT_DIR="$REPO_DIR"
+
+    COMPOSE_AS="$PROJECT_DIR/compose-prod.yaml"
+  fi
 
   export PROD_DB_HOST
   export PROD_DB_PORT

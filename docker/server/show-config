@@ -22,6 +22,6 @@ else
     export PROD_DB_USER
     export PROD_DB_PASSWORD
 
-    docker-compose -f "$PROJECT_DIR/compose-prod.yaml" config
+    docker-compose -f "$REPO_DIR/compose-prod.yaml" config
   fi
 fi

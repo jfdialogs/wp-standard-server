@@ -21,6 +21,8 @@ else
 
     source "$PROJECT_DIR/.env.prod"
 
+    PROJECT_DIR="$REPO_DIR"
+
     DATABASE_NAME="$PROD_DB_NAME"
 
     if [ "$DEPLOY_ENV" != "prod" ]; then

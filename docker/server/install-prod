@@ -79,6 +79,8 @@ else
       echo "Git cloning $GIT_REPO  branch $DEPLOY_BRANCH into $PROJECT_DIR as $SITE_USER"
       echo ""
 
+      git config --global http.postBuffer 524288000
+
       su -c "git clone -b $DEPLOY_BRANCH $GIT_REPO $PROJECT_DIR" - "$SITE_USER"
 
       echo ""

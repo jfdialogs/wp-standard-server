@@ -14,6 +14,8 @@ else
 
     source "$PROJECT_DIR/.env.prod"
 
+    PROJECT_DIR="$REPO_DIR"
+
     export PROD_DB_HOST
     export PROD_DB_PORT
     export PROD_DB_NAME

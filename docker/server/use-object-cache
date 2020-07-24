@@ -6,20 +6,28 @@ else
   echo "Running shell within cache container..."
   echo ""
 
-  ENV_FILE="$PROJECT_DIR/.env"
   COMPOSE_FILE="compose-local.yaml"
 
-  if [ "prod" == "$APP_ENV" ]; then
-    COMPOSE_FILE="compose-prod.yaml"
-  else
+  source "$PROJECT_DIR/.env"
+
+  if [ "$DEPLOY_ENV" == "local" ]; then
     source "$PROJECT_DIR/.env.local"
-  fi
+    source "$PROJECT_DIR/.env.prod"
 
-  source "$PROJECT_DIR/.env.prod"
-
-  if [ -f "$ENV_FILE" ]; then
-    docker-compose -f "$PROJECT_DIR/compose-local.yaml" exec cache bash
+    docker-compose -f "$COMPOSE_FILE" exec cache redis-cli
   else
-    echo "Environment file $ENV_FILE missing. Aborting."
+    COMPOSE_FILE="compose-prod.yaml"
+
+    PROJECT_DIR="$REPO_DIR"
+
+    if ! command -v redli &> /dev/null; then
+      cd /tmp
+      wget https://github.com/IBM-Cloud/redli/releases/download/v0.5.2/redli_0.5.2_linux_amd64.tar.gz
+      tar xvf redli_0.5.2_linux_amd64.tar.gz
+      sudo mv redli /usr/local/bin/
+      rm redli_0.5.2_linux_amd64.tar.gz
+    fi
+
+    redli -u "$(dirname $REDIS_URL)"
   fi
 fi
