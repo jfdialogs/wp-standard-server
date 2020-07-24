@@ -22,6 +22,14 @@ function current_branch {
   echo $(git branch --show-current)
 }
 
+function diff_master {
+  git diff master --name-only
+}
+
+function diff_master_prod {
+  git diff master..PROD --name-only
+}
+
 function is_master {
   if [ "master" == "$(current_branch)" ]; then
     echo true
@@ -158,7 +166,20 @@ function deploy_prod {
   echo "This command will promote master to PROD for deployment."
   echo ""
 
-  CONITNUE=true
+  echo "This will promote the following changes from master to PROD. Continue (y/n)?"
+  echo ""
+
+  diff_master_prod
+
+  read ANSWER
+
+  echo ""
+
+  if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+    exit 0
+  fi
+
+  CONTINUE=true
 
   if [ -n "$(unstaged_changes)" ]; then
     CONTINUE=false
@@ -180,7 +201,7 @@ function deploy_prod {
   fi
 
   if [ "true" == "$CONTINUE" ]; then
-    if [ "rue" != "$(is_master)" ]; then
+    if [ "true" != "$(is_master)" ]; then
       echo "Switching branch to MASTER..."
       echo ""
 
@@ -276,6 +297,24 @@ if [ -n "$(has_command $COMMAND)" ] && [ "help" != "$COMMAND" ]; then
     deploy_dev
   fi
 
+  if [ "diff" == "$COMMAND" ] || [ "diff-master" == "$COMMAND" ]; then
+    echo "Master files with changes."
+    echo""
+
+    diff_master
+
+    echo ""
+  fi
+
+  if [ "diff-promote" == "$COMMAND" ]; then
+    echo "Master files with changes."
+    echo""
+
+    diff_master_prod
+
+    echo ""
+  fi
+
   if [ "promote" == "$COMMAND" ]; then
     deploy_prod
   fi
@@ -295,7 +334,7 @@ if [ -n "$(has_command $COMMAND)" ] && [ "help" != "$COMMAND" ]; then
 fi
 
 if [ "help" == "$COMMAND" ] || [ -z "$COMMAND" ]; then
-  echo "COMMANDS: ${COMMANDS[@]}"
+  echo "COMMANDS: ${COMMANDS[*]}"
 fi
 
 echo ""
