@@ -22,7 +22,7 @@ function backup_env {
   fi
 
   if [ -s "$FILENAME" ]; then
-    mv "$PROJECT_DIR/$FILENAME" "$PROJECT_DIR/$FILENAME-$(date '+%Y%m%d%H%M%S')"
+    mv "$FILENAME" "$FILENAME-$(date '+%Y%m%d%H%M%S')"
   fi
 }
 

@@ -6,7 +6,7 @@ function dump_filename {
   EXPORTED_AT=$3
 
   EXPORTS_DIR="$DOCKER_DIR/data/export"
-  PATH_TO_EXPORTS="$EXPORTS_DIR/$EXPORTED_AT"
+  PATH_TO_EXPORTS="$EXPORTS_DIR/$PREAMBLE-$EXPORTED_AT"
 
   if [ ! -d "$EXPORTS_DIR" ]; then
     mkdir "$EXPORTS_DIR"
@@ -74,9 +74,9 @@ else
   echo "${DB_TABLES[*]}"
   echo ""
 
-  for TABLE in ${DB_TABLES[@]};
+  for TABLE in ${DB_TABLES[*]};
   do
-    DUMP_FILE=$(dump_filename "${PROJECT_KEY}-prod" "$TABLE" "$CURRENT_DATETIME")
+    DUMP_FILE=$(dump_filename "$PROJECT_KEY-prod" "$TABLE" "$CURRENT_DATETIME")
 
     echo "$COUNTER. Exporting $TABLE to file:///$DUMP_FILE ..."
 

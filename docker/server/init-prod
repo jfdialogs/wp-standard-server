@@ -183,27 +183,33 @@ function make_project_env_file {
 function make_prod_env_file {
   FILENAME="$PROJECT_DIR/.env.prod"
 
-  echo "Generate Production Environment Variables"
+  TARGET_ENV=PRODUCTION
+
+  if [ "$DEPLOY_ENV" != "prod" ]; then
+    TARGET_ENV=DEVELOPMENT
+  fi
+
+  echo "Generate $TARGET_ENV Environment Variables"
   echo "====="
   echo ""
 
-  echo "What is the production database host?"
+  echo "What is the $TARGET_ENV database host?"
 
   read PROD_DB_HOST
 
-  echo "What is the production database port?"
+  echo "What is the $TARGET_ENV database port?"
 
   read PROD_DB_PORT
 
-  echo "What is the production database name (alphanumeric and underscores)?"
+  echo "What is the $TARGET_ENV database name (alphanumeric and underscores)?"
 
   read PROD_DB_NAME
 
-  echo "What is the production database user?"
+  echo "What is the $TARGET_ENV database user?"
 
   read PROD_DB_USER
 
-  echo "What is the production database user password?"
+  echo "What is the $TARGET_ENV database user password?"
 
   read PROD_DB_PASSWORD
 
