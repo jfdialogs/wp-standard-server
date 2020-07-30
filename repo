@@ -23,11 +23,11 @@ function current_branch {
 }
 
 function diff_master {
-  git diff master --name-only
+  git diff origin/master --name-only
 }
 
 function diff_master_prod {
-  git diff master..PROD --name-only
+  git diff origin/master..origin/PROD --name-only
 }
 
 function is_master {
@@ -175,7 +175,7 @@ function deploy_prod {
 
   echo ""
 
-  if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+  if [ "$ANSWER" != "y" ]; then
     exit 0
   fi
 
