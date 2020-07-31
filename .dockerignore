@@ -1,0 +1,14 @@
+.dockerignore
+.git
+.gitignore
+compose-local.yaml
+compose-prod.yaml
+Dockerfile
+README.md
+repo
+server
+
+docker/data
+
+!docker/etc/default/varnish
+!docker/scripts/startup
