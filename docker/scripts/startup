@@ -28,7 +28,7 @@ else
 fi
 
 echo ""
-echo "Staring web server."
+echo "Starting web server."
 echo ""
 
 /usr/local/bin/docker-entrypoint.sh apache2-foreground
