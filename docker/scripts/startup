@@ -20,6 +20,9 @@ if [ "$HTTP_ACCELERATION" == yes ]; then
   fi
 
   service varnish start
+
+  nohup varnishlog -a -w /var/log/varnish/varnish50x.log -q "RespStatus >= 500 or BerespStatus >= 500"
+  nohup varnishlog -a -A -w /var/log/varnish/apache50x.log -q "RespStatus >= 500 or BerespStatus >= 500"
 else
   echo "Disabling HTTP acceleration."
 

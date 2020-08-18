@@ -17,6 +17,9 @@ else
     chown -R www-data "/mnt/$PROJECT_VOLUME"
     chgrp -R www-data "/mnt/$PROJECT_VOLUME"
 
+    chown -R root "/mnt/$PROJECT_VOLUME/logs"
+    chgrp -R root "/mnt/$PROJECT_VOLUME/logs"
+
     echo "Done."
   fi
 fi

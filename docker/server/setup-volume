@@ -25,8 +25,8 @@ else
       echo ""
 
       mkdir -m 775 "$LOGS_DIR"
-      chown www-data "$LOGS_DIR"
-      chgrp www-data "$LOGS_DIR"
+      chown root "$LOGS_DIR"
+      chgrp root "$LOGS_DIR"
     fi
 
     if [ ! -d "$UPLOADS_DIR" ]; then
