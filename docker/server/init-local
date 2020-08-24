@@ -72,9 +72,14 @@ function make_project_env_file {
 
   read DEV_HOSTNAME
 
+  echo "What is the real hostname for the current server (e.g. behind load balance)?"
+
+  read WEB_HOSTNAME_REAL
+
   DEV_HOSTNAME="$(strip_hostname_protocol $DEV_HOSTNAME)"
   PROD_HOSTNAME="$(strip_hostname_protocol $PROD_HOSTNAME)"
   WEB_HOSTNAME="$(sub_local_hostname $PROD_HOSTNAME)"
+  WEB_HOSTNAME_REAL="$(strip_hostname_protocol $WEB_HOSTNAME_REAL)"
 
   echo ""
 
@@ -109,6 +114,7 @@ function make_project_env_file {
   echo "" >> "$FILENAME"
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> "$FILENAME"
   echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> "$FILENAME"
+  echo "WEB_HOSTNAME_REAL=http://$WEB_HOSTNAME_REAL" >> "$FILENAME"
   echo "WEB_PORT=$WEB_PORT" >> "$FILENAME"
   echo "BASE_URL=$BASE_URL" >> "$FILENAME"
   echo "DEV_HOSTNAME=$DEV_HOSTNAME" >> "$FILENAME"

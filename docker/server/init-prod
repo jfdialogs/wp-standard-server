@@ -93,9 +93,14 @@ function make_project_env_file {
 
   echo ""
 
+  echo "What is the real hostname for the current server (e.g. behind load balance)?"
+
+  read WEB_HOSTNAME_REAL
+
   WEB_HOSTNAME="$(strip_hostname_protocol $WEB_HOSTNAME)"
   PROD_HOSTNAME="$(strip_hostname_protocol $PROD_HOSTNAME)"
   DEV_HOSTNAME="$(strip_hostname_protocol $DEV_HOSTNAME)"
+  WEB_HOSTNAME_REAL="$(strip_hostname_protocol $WEB_HOSTNAME_REAL)"
 
   echo "What is the Redis cache URL (rediss://default:[password]@[host]:[port]/[cache-key])?"
 
@@ -155,6 +160,7 @@ function make_project_env_file {
   echo "WEB_PROTOCOL=$WEB_PROTOCOL" >> "$FILENAME"
   echo "WEB_HOSTNAME=$WEB_HOSTNAME" >> "$FILENAME"
   echo "DEV_HOSTNAME=$DEV_HOSTNAME" >> "$FILENAME"
+  echo "WEB_HOSTNAME_REAL=http://$WEB_HOSTNAME_REAL" >> "$FILENAME"
   echo "DEV_BASE_URL=http://$DEV_HOSTNAME" >> "$FILENAME"
   echo "PROD_HOSTNAME=$PROD_HOSTNAME" >> "$FILENAME"
   echo "DEV_BASE_URL=http://$PROD_HOSTNAME" >> "$FILENAME"
