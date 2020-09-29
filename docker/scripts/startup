@@ -7,6 +7,7 @@ service cron start
 
 VHOST_CONF="/etc/apache2/sites-enabled/000-default.conf"
 PORTS_CONF="/etc/apache2/ports.conf"
+VARNISH_DIR="/etc/varnish"
 
 systemctl enable varnish
 
@@ -17,6 +18,11 @@ if [ "$HTTP_ACCELERATION" == yes ]; then
 
   if ! grep -q "8080" "$PORTS_CONF"; then
     sed -i -e 's/80/8080/' "$PORTS_CONF"
+  fi
+
+  if [ ! -e "$VARNISH_DIR/secret" ]; then
+    uuidgen > "$VARNISH_DIR/secret"
+    chgrp www-data "$VARNISH_DIR/secret"
   fi
 
   service varnish start

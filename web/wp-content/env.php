@@ -119,7 +119,8 @@ if (isset($_SERVER['HTTP_HOST'])) {
     // If we have detected that the end use is HTTPS, make sure we pass that
     // through here, so <img> tags and the like don't generate mixed-mode
     // content warnings.
-    if (isset($_SERVER['HTTP_USER_AGENT_HTTPS']) && $_SERVER['HTTP_USER_AGENT_HTTPS'] == 'ON') {
+    if (isset($_SERVER['HTTP_USER_AGENT_HTTPS']) && $_SERVER['HTTP_USER_AGENT_HTTPS'] == 'ON'
+        || isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
         $scheme = 'https';
         $_SERVER['HTTPS'] = 'on';
     }
