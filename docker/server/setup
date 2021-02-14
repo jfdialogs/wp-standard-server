@@ -10,6 +10,12 @@ else
       source "$PROJECT_DIR/server" start
     fi
 
-    docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$PROJECT_DIR/.env" exec data /docker/setup-database
+    SETUP_DATABASE="/docker/server/setup-database"
+
+    if [ -f "$PROJECT_DIR/docker/scripts/setup-database" ]; then
+      SETUP_DATABASE="/docker/scripts/setup-database"
+    fi
+
+    docker-compose -f "$PROJECT_DIR/compose-local.yaml" --env-file "$PROJECT_DIR/.env" exec data "$SETUP_DATABASE"
   fi
 fi
