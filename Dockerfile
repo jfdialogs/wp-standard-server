@@ -16,9 +16,12 @@ RUN apt-get update &&\
     npm install --global --save-dev webpack &&\
     npm install --global --save-dev webpack-cli &&\
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash &&\
+    EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" &&\
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&\
-    php -r "if (hash_file('SHA384', 'composer-setup.php') === '795f976fe0ebd8b75f26a6dd68f78fd3453ce79f32ecb33e7fd087d39bfeb978342fb73ac986cd4f54edd0dc902601dc') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" &&\
-    php composer-setup.php --install-dir=/bin --filename=composer &&\
+    ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")" &&\
+    if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then echo 'ERROR: Invalid installer checksum' && exit 1; fi &&\
+    php composer-setup.php --quiet --install-dir=/bin --filename=composer &&\
+    rm composer-setup.php &&\
     chmod +x /bin/composer &&\
     php -v &&\
     python -V &&\
