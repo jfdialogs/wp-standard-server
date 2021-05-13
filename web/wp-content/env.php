@@ -111,6 +111,10 @@ if ($_ENV['APP_ENV'] !== 'prod') {
     }
 }
 
+if ($_ENV['DEPLOY_ENV'] !== 'prod') {
+    header('X-Robots-Tag: none');
+}
+
 /** A couple extra tweaks to help things run. **/
 if (isset($_SERVER['HTTP_HOST'])) {
     // HTTP is still the default scheme for now.

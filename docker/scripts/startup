@@ -11,6 +11,10 @@ VARNISH_DIR="/etc/varnish"
 
 systemctl enable varnish
 
+if [ "$DEPLOY_ENV" != "prod" ]; then
+  cp /docker/etc/apache2/robots.txt /var/www/html/robots.txt
+fi
+
 if [ "$HTTP_ACCELERATION" == yes ]; then
   echo "Starting HTTP acceleration."
 
