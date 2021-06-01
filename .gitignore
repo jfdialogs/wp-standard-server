@@ -22,11 +22,12 @@ web/wp-content/index.php
 wp-content/cache/
 wp-content/backups/
 
-### www custom ###
+### Project Custom ###
 ############
 !web/ping.php
 !web/ads.txt
 !web/.htaccess
+!web/robots-deny.txt
 docker/etc/varnish/secret
 
 # Packages #
