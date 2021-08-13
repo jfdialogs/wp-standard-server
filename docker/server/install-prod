@@ -140,9 +140,16 @@ else
         echo "Symlinking $PROJECT_DIR to /app..."
         echo ""
 
+        chown "$SITE_USER" "$RELAY_DIR"
+        chown "$SITE_USER" "$PROJECT_DIR"
+
         ln -s "$PROJECT_DIR" /app
-        chown www-data /app
+
         chgrp www-data /app
+
+        echo ""
+        echo "# $SITE_USER should log into app directory."
+        echo "ch /app" >> "/home/$SITE_USER/.bashrc"
 
         echo "Start prod server with '/app/server start-prod'."
         echo ""
