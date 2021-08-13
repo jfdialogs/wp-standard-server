@@ -148,7 +148,7 @@ else
         chgrp www-data /app
 
         echo ""
-        echo "# $SITE_USER should log into app directory."
+        echo "# $SITE_USER should log into app directory." >> "/home/$SITE_USER/.bashrc"
         echo "ch /app" >> "/home/$SITE_USER/.bashrc"
 
         echo "Start prod server with '/app/server start-prod'."
