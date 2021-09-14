@@ -1,9 +1,9 @@
-FROM wordpress:php7.3
+FROM wordpress:php7.4
 
 RUN apt-get update &&\
-    apt-get --assume-yes install gnupg varnish logrotate net-tools dnsutils wget nano zip unzip uuid-runtime software-properties-common git python-pip python-dev &&\
+    apt-get --assume-yes install gnupg varnish logrotate net-tools dnsutils wget nano zip unzip uuid-runtime software-properties-common git python3-pip python-dev &&\
     add-apt-repository -r ppa:certbot/certbot &&\
-    apt-get --assume-yes install python-certbot-apache &&\
+    apt-get --assume-yes install python3-certbot-apache &&\
     rm -rf /var/lib/apt/lists/* &&\
     pecl install redis &&\
     docker-php-ext-enable redis &&\
