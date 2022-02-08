@@ -33,7 +33,9 @@ else
     DEPLOY_BRANCH=PROD
   fi
 
-  SITE_USER=dmag
+  echo "What is the site username?"
+
+  read SITE_USER
 
   export HEADLESS
   export PROJECT_DIR
