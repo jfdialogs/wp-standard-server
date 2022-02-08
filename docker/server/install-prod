@@ -28,7 +28,11 @@ else
 
     exit 1
   elif [ "$DEPLOY_ENV" == "dev" ]; then
-    DEPLOY_BRANCH=master
+    echo "What is the main branch of development?"
+
+    read DEPLOY_BRANCH
+
+    echo ""
   elif [ "$DEPLOY_ENV" == "prod" ]; then
     DEPLOY_BRANCH=PROD
   fi
@@ -36,6 +40,8 @@ else
   echo "What is the site username?"
 
   read SITE_USER
+
+  echo ""
 
   export HEADLESS
   export PROJECT_DIR
